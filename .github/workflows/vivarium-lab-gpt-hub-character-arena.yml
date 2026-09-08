@@ -1,0 +1,102 @@
+name: Vivarium Lab GPT Hub Character Arena
+
+on:
+  push:
+    paths:
+      - 'vivarium-lab/control/character-arena-request.json'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: vivarium-lab-gpt-hub-character-arena
+  cancel-in-progress: false
+
+jobs:
+  character-arena:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Read GPT Hub request
+        id: request
+        shell: bash
+        run: |
+          FILE='vivarium-lab/control/character-arena-request.json'
+          ENABLED=$(jq -r '.enabled // false' "$FILE")
+          DEPTH=$(jq -r '.depth // "smoke"' "$FILE")
+          REQUEST_ID=$(jq -r '.request_id // "unknown"' "$FILE")
+          if [ "$DEPTH" != "smoke" ] && [ "$DEPTH" != "full" ]; then
+            echo "::error::Unsupported depth: $DEPTH"
+            exit 1
+          fi
+          echo "enabled=$ENABLED" >> "$GITHUB_OUTPUT"
+          echo "depth=$DEPTH" >> "$GITHUB_OUTPUT"
+          echo "request_id=$REQUEST_ID" >> "$GITHUB_OUTPUT"
+
+      - name: Disabled request
+        if: steps.request.outputs.enabled != 'true'
+        shell: bash
+        run: |
+          echo "GPT Hub request is disabled. No paid model calls will run."
+
+      - name: Setup Node
+        if: steps.request.outputs.enabled == 'true'
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Verify provider secret
+        if: steps.request.outputs.enabled == 'true'
+        shell: bash
+        run: |
+          if [ -z "$OPENROUTER_API_KEY" ]; then
+            echo "::error::OPENROUTER_API_KEY is not configured in repository Actions secrets."
+            echo "The GPT Hub can prepare and trigger runs, but the account owner must add this secret once."
+            exit 1
+          fi
+
+      - name: Run ASTRA character arena
+        if: steps.request.outputs.enabled == 'true'
+        shell: bash
+        run: |
+          mkdir -p vivarium-lab/artifacts/character-arena
+          EXTRA=""
+          if [ "${{ steps.request.outputs.depth }}" = "smoke" ]; then
+            EXTRA="--filter-first-n 5"
+          fi
+          npx promptfoo@latest eval \
+            -c vivarium-lab/evals/character/promptfooconfig.yaml \
+            --no-cache \
+            $EXTRA \
+            -o vivarium-lab/artifacts/character-arena/results.json
+
+      - name: Add GPT Hub mobile summary
+        if: always()
+        shell: bash
+        run: |
+          echo "## GPT Vivarium Lab — GPT Hub Character Arena" >> "$GITHUB_STEP_SUMMARY"
+          echo "Request: **${{ steps.request.outputs.request_id }}**" >> "$GITHUB_STEP_SUMMARY"
+          echo "Enabled: **${{ steps.request.outputs.enabled }}**" >> "$GITHUB_STEP_SUMMARY"
+          echo "Depth: **${{ steps.request.outputs.depth }}**" >> "$GITHUB_STEP_SUMMARY"
+          if [ -f vivarium-lab/artifacts/character-arena/results.json ]; then
+            echo "Result artifact generated successfully." >> "$GITHUB_STEP_SUMMARY"
+          elif [ "${{ steps.request.outputs.enabled }}" = "true" ]; then
+            echo "No result artifact was generated. Inspect the failed step above." >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "Request was intentionally disabled; no model calls were made." >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Upload evaluation artifact
+        if: always() && steps.request.outputs.enabled == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: vivarium-gpt-hub-character-arena-${{ steps.request.outputs.request_id }}
+          path: vivarium-lab/artifacts/character-arena/
+          if-no-files-found: ignore
+          retention-days: 30
