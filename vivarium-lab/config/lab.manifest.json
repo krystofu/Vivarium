@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "lab": {
+    "name": "GPT Vivarium Lab",
+    "version": "0.1.0-bootstrap",
+    "architecture": "VIVARIUM_LAB_ARCHITECTURE_v1.0",
+    "phone_first": true,
+    "canonical_repository": "krystofu/Vivarium",
+    "notion_hub": "https://app.notion.com/p/3d56842ccdee811e95cbe6dbc241734a"
+  },
+  "workstreams": [
+    "lab-core",
+    "character-qa",
+    "plugin-qa",
+    "model-arena",
+    "visual-dna",
+    "weave-synapse",
+    "live-tester",
+    "observability",
+    "release"
+  ],
+  "integrations": {
+    "github": {"status": "connected", "role": "canonical source and CI"},
+    "notion": {"status": "connected", "role": "R&D tracking and evidence summaries"},
+    "runway": {"status": "connected", "role": "visual DNA and media R&D"},
+    "google_drive": {"status": "available", "role": "bulky assets and exports"},
+    "replit": {"status": "available", "role": "future hosted mobile dashboard"},
+    "openrouter": {"status": "credential-required", "secret": "OPENROUTER_API_KEY", "role": "model arena"},
+    "promptfoo": {"status": "repo-managed", "role": "automated LLM evaluation"}
+  },
+  "release_states": [
+    "DRAFT",
+    "LOCAL_PASS",
+    "EVAL_CANDIDATE",
+    "LIVE_CANDIDATE",
+    "LIVE_CERTIFIED",
+    "CANONICAL"
+  ],
+  "protected_dimensions": [
+    "identity_fidelity",
+    "user_agency",
+    "consent_boundary_handling",
+    "physical_continuity",
+    "relationship_continuity",
+    "anti_leak_behavior",
+    "structural_validity"
+  ],
+  "cost_policy": {
+    "static_ci": "automatic",
+    "paid_model_evals": "manual-by-default",
+    "scheduled_paid_evals": "disabled"
+  }
+}

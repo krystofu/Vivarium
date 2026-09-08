@@ -1,0 +1,83 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://vivarium.local/schemas/visual-dna-pack.schema.json",
+  "title": "Vivarium Visual DNA Pack",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["character_id", "character_name", "adult_age", "style", "identity_anchors", "references", "variation_targets", "quality_gates"],
+  "properties": {
+    "character_id": {"type": "string", "minLength": 1},
+    "character_name": {"type": "string", "minLength": 1},
+    "adult_age": {"type": "integer", "minimum": 21},
+    "style": {
+      "type": "object",
+      "required": ["name", "version"],
+      "properties": {
+        "name": {"type": "string"},
+        "version": {"type": "string"},
+        "style_reference_urls": {"type": "array", "items": {"type": "string", "format": "uri"}}
+      }
+    },
+    "identity_anchors": {
+      "type": "object",
+      "required": ["face", "hair", "body_proportions"],
+      "properties": {
+        "face": {"type": "string"},
+        "hair": {"type": "string"},
+        "body_proportions": {"type": "string"},
+        "skin": {"type": "string"},
+        "eyes": {"type": "string"},
+        "tattoos_piercings_marks": {"type": "string"},
+        "other": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+    "references": {
+      "type": "array",
+      "minItems": 3,
+      "items": {
+        "type": "object",
+        "required": ["role", "url"],
+        "properties": {
+          "role": {
+            "enum": [
+              "face_front",
+              "face_three_quarter_left",
+              "face_three_quarter_right",
+              "profile_left",
+              "profile_right",
+              "full_body_front",
+              "full_body_side",
+              "seated_proportions",
+              "expression",
+              "outfit_anchor",
+              "style_anchor",
+              "body_anchor",
+              "other"
+            ]
+          },
+          "url": {"type": "string", "format": "uri"},
+          "canonical": {"type": "boolean", "default": false},
+          "notes": {"type": ["string", "null"]}
+        }
+      }
+    },
+    "variation_targets": {
+      "type": "object",
+      "required": ["pose", "head_angle", "expression", "outfit", "scene"],
+      "properties": {
+        "pose": {"type": "string"},
+        "head_angle": {"type": "string"},
+        "expression": {"type": "string"},
+        "outfit": {"type": "string"},
+        "scene": {"type": "string"}
+      }
+    },
+    "quality_gates": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"type": "string"}
+    },
+    "runway_asset_urls": {"type": "array", "items": {"type": "string", "format": "uri"}},
+    "notes": {"type": ["string", "null"]}
+  }
+}

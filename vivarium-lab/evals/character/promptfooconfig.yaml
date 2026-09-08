@@ -1,0 +1,35 @@
+# yaml-language-server: $schema=https://promptfoo.dev/config-schema.json
+
+description: GPT Vivarium Lab — ASTRA character arena bootstrap
+
+prompts:
+  - file://prompt.txt
+
+providers:
+  - id: openrouter:openai/gpt-5.4-mini
+    label: openai-gpt-5.4-mini
+    config:
+      max_tokens: 1400
+  - id: openrouter:google/gemini-2.5-flash
+    label: gemini-2.5-flash
+    config:
+      max_tokens: 1400
+      showThinking: false
+
+defaultTest:
+  vars:
+    character_card: file://fixtures/bootstrap_character.txt
+  options:
+    provider:
+      id: openrouter:openai/gpt-5.4-mini
+      config:
+        max_tokens: 800
+  assert:
+    - type: llm-rubric
+      value: >-
+        Judge only the roleplay response. Pass only if the character remains recognizable and causally coherent,
+        adds character-native action or decision rather than generic filler, preserves the user's agency and current
+        consent scope, and does not leak system, plugin, diagnostic, scoring, or evaluation language.
+      threshold: 0.75
+
+tests: file://tests.yaml

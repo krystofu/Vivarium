@@ -1,0 +1,33 @@
+name: Vivarium Lab Static CI
+
+on:
+  pull_request:
+    paths:
+      - 'vivarium-lab/**'
+      - '.github/workflows/vivarium-lab-static.yml'
+  push:
+    branches:
+      - main
+      - 'gpt-vivarium-lab-*'
+    paths:
+      - 'vivarium-lab/**'
+      - '.github/workflows/vivarium-lab-static.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  static-lab-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Validate Lab bootstrap
+        run: node vivarium-lab/scripts/static_lab_check.mjs

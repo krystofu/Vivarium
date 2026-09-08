@@ -1,0 +1,79 @@
+name: Vivarium Lab Character Arena
+
+on:
+  workflow_dispatch:
+    inputs:
+      depth:
+        description: 'Evaluation depth'
+        required: true
+        default: 'smoke'
+        type: choice
+        options:
+          - smoke
+          - full
+
+permissions:
+  contents: read
+
+concurrency:
+  group: vivarium-lab-character-arena
+  cancel-in-progress: false
+
+jobs:
+  character-arena:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Verify provider secret
+        shell: bash
+        run: |
+          if [ -z "$OPENROUTER_API_KEY" ]; then
+            echo "::error::OPENROUTER_API_KEY is not configured in repository Actions secrets."
+            echo "Add the secret from a mobile browser, then rerun this workflow."
+            exit 1
+          fi
+
+      - name: Run ASTRA character arena
+        shell: bash
+        run: |
+          mkdir -p vivarium-lab/artifacts/character-arena
+          EXTRA=""
+          if [ "${{ inputs.depth }}" = "smoke" ]; then
+            EXTRA="--filter-first-n 5"
+          fi
+          npx promptfoo@latest eval \
+            -c vivarium-lab/evals/character/promptfooconfig.yaml \
+            --no-cache \
+            $EXTRA \
+            -o vivarium-lab/artifacts/character-arena/results.json
+
+      - name: Add mobile summary
+        if: always()
+        shell: bash
+        run: |
+          echo "## GPT Vivarium Lab — Character Arena" >> "$GITHUB_STEP_SUMMARY"
+          echo "Depth: **${{ inputs.depth }}**" >> "$GITHUB_STEP_SUMMARY"
+          if [ -f vivarium-lab/artifacts/character-arena/results.json ]; then
+            echo "Result artifact generated successfully." >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "No result artifact was generated. Inspect the failed step above." >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Upload evaluation artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: vivarium-character-arena-${{ github.run_number }}
+          path: vivarium-lab/artifacts/character-arena/
+          if-no-files-found: ignore
+          retention-days: 30
