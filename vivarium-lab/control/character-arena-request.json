@@ -1,0 +1,7 @@
+{
+  "request_id": "bootstrap-disabled",
+  "enabled": false,
+  "depth": "smoke",
+  "requested_by": "GPT",
+  "purpose": "GPT updates this file to trigger the Character Arena without requiring Krys to open GitHub."
+}
