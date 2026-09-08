@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://vivarium.local/schemas/plugin-eval-result.schema.json",
+  "title": "Vivarium Plugin Evaluation Result",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["artifact", "suite_id", "evidence_level", "tests", "metrics", "pass"],
+  "properties": {
+    "artifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "version"],
+      "properties": {
+        "name": {"type": "string", "minLength": 1},
+        "version": {"type": "string", "minLength": 1},
+        "commit_sha": {"type": ["string", "null"]},
+        "artifact_url": {"type": ["string", "null"], "format": "uri"}
+      }
+    },
+    "suite_id": {"type": "string"},
+    "evidence_level": {"enum": ["LOCAL", "SIMULATED", "LIVE"]},
+    "tests": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "family", "pass", "evidence"],
+        "properties": {
+          "id": {"type": "string"},
+          "family": {"enum": ["POSITIVE", "NEGATIVE", "BOUNDARY", "INTERACTION", "PERSISTENCE", "LONG_RUN", "UX"]},
+          "pass": {"type": "boolean"},
+          "evidence": {"type": "string"},
+          "observed_state": {"type": ["object", "null"]},
+          "notes": {"type": ["string", "null"]}
+        }
+      }
+    },
+    "metrics": {
+      "type": "object",
+      "additionalProperties": {
+        "type": ["number", "null"]
+      },
+      "description": "Recommended metrics include trigger_precision, trigger_recall, intervention_rate, state_contradiction_rate, state_drift_rate, agency_violation_rate, novel_information_rate, false_director_rate, and context_footprint_tokens."
+    },
+    "pass": {"type": "boolean"},
+    "regressions": {
+      "type": "array",
+      "items": {"type": "string"},
+      "uniqueItems": true
+    },
+    "created_at": {"type": ["string", "null"], "format": "date-time"}
+  }
+}
