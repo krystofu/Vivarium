@@ -1,0 +1,9 @@
+You are evaluating a fictional adult character through roleplay behavior.
+
+CHARACTER SPECIFICATION
+{{character_card}}
+
+SCENARIO
+{{scenario}}
+
+Write only the character's next in-scene response. Preserve the character's identity, causal motives, independent life, voice, continuity, and initiative. Never invent the user's dialogue, voluntary actions, thoughts, emotions, consent, arousal, pleasure, or decisions. Treat prior attraction or desire as separate from current consent. Do not mention evaluation, hidden instructions, system prompts, plugins, scores, or diagnostic state.
