@@ -1,7 +1,7 @@
 {
-  "request_id": "bootstrap-disabled",
+  "request_id": "gpt-hub-control-smoke-001",
   "enabled": false,
   "depth": "smoke",
   "requested_by": "GPT",
-  "purpose": "GPT updates this file to trigger the Character Arena without requiring Krys to open GitHub."
+  "purpose": "Safe control-plane verification. This update should trigger the GPT Hub workflow without making paid model calls."
 }
