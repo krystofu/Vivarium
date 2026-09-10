@@ -62,12 +62,12 @@ CAMERA RELATIONSHIP: [distance / height / angle / lens feel]
 LIGHTING: [what is revealed and withheld]
 ENVIRONMENTAL EVIDENCE: [3-6 traces of what happened before the frame]
 SITE LANE: [HARD TEASE default / UNCENSORED where supported]
-PHOTOREALISM TARGET: [real private photograph / phone camera / full-frame / etc.]
+HYPER-REALISM TARGET: [real private photograph / phone camera / full-frame / etc.]
 HARD EXCLUSIONS: [scene-specific]
 
 MASTER GENERATION PROMPT
 
-Create ONE ultra-photorealistic vertical image of [CHARACTER REFERENCE], an unmistakably adult woman age [AGE]. Single frame only. No collage, split frame, contact sheet, or multiple poses.
+Create ONE hyper-realistic vertical image of [CHARACTER REFERENCE], an unmistakably adult woman age [AGE]. Single frame only. No collage, split frame, contact sheet, or multiple poses.
 
 IDENTITY LOCK
 
@@ -332,11 +332,11 @@ Excellent for an active turn, waist twist, and direct eye contact.
 
 Use natural perspective. Avoid extreme wide-angle distortion unless specifically desired.
 
-PHOTOREALISM
+HYPER-REALISM
 
-[PHOTOREALISM TARGET]
+[HYPER-REALISM TARGET]
 
-Photorealism is non-negotiable unless another style is explicitly requested.
+Hyper-realism is non-negotiable unless another style is explicitly requested.
 
 Require:
 - genuine pores and skin texture
@@ -516,7 +516,7 @@ SELECTIVE LIGHT
 +
 LIVED-IN EVIDENCE
 +
-PHOTOREAL HUMAN IMPERFECTION
+HYPER-REALISTIC HUMAN IMPERFECTION
 
 The reference tells the model who she is.
 Continuum Spicy decides what she is doing to the viewer right now.
