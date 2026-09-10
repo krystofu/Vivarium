@@ -81,7 +81,7 @@ HARD EXCLUSIONS: [character-specific must-nots]
 
 MASTER GENERATION PROMPT
 
-Create ONE vertical 2:3 photograph or premium photoreal character image of [CHARACTER NAME], an unmistakably adult woman age [ADULT AGE]. Single frame only. No collage, split frame, contact sheet, or multiple poses.
+Create ONE vertical 2:3 photograph or premium hyper-realistic character image of [CHARACTER NAME], an unmistakably adult woman age [ADULT AGE]. Single frame only. No collage, split frame, contact sheet, or multiple poses.
 
 PRIMARY OBJECTIVE
 
