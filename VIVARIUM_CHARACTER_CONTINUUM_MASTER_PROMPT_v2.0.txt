@@ -1,0 +1,500 @@
+VIVARIUM CHARACTER CONTINUUM MASTER PROMPT v2.0
+Canonical Reference-Driven Sensual / Erotic Scene System
+
+PURPOSE
+
+Use this master ONLY when the character already has a trusted visual reference, saved character identity, element, LoRA, face reference, or equivalent identity anchor.
+
+Do NOT waste prompt space redescribing a face and body that the renderer can already see.
+
+The reference establishes truth.
+The prompt stages the moment.
+
+CORE PRINCIPLE
+
+CONTINUUM SPENDS TRUTH.
+
+The job is not to redefine the woman.
+The job is to place the already-known woman into a specific, sensual, erotic, emotionally charged moment that feels lived rather than posed.
+
+REFERENCE-FIRST OPENING
+
+Create ONE vertical 2:3 image of [CHARACTER_REFERENCE], an unmistakably adult woman age [AGE].
+
+Preserve her established reference identity, facial structure, body proportions, skin, hair, permanent marks, and recognizable asymmetry exactly.
+
+Do not redesign, idealize, genericize, slim, widen, inflate, shorten, age-shift, or replace her.
+
+Then move on.
+
+Do not repeat a long visual biography unless the renderer has demonstrated a specific drift problem.
+
+THE CENTRAL RULE
+
+Eroticism is not an adjective.
+Eroticism is a chain of physical facts.
+
+Never rely on:
+“make her sexy”
+“make her seductive”
+“make her erotic”
+“make her provocative”
+
+Instead stage:
+- what she was doing
+- how her weight is distributed
+- what her clothing is physically doing
+- what changed a moment earlier
+- how long she has known the viewer is watching
+- what she consciously does not fix yet
+- where the camera is
+- what light reveals
+- what shadow withholds
+- what environmental evidence suggests happened before the shutter
+
+THE FIVE-BEAT EROTIC MOMENT ENGINE
+
+Every scene must answer all five:
+
+1. SHE WAS ALREADY DOING SOMETHING.
+The frame interrupts a real activity, ritual, transition, recovery, preparation, or private habit.
+
+2. YOU WERE ALREADY THERE.
+The camera represents another person physically present. Avoid first-contact surprise unless the scene specifically requires it.
+
+3. SHE KNOWS YOU ARE WATCHING.
+Her expression or behavior demonstrates sustained awareness.
+
+4. SOMETHING IS PHYSICALLY UNRESOLVED.
+A garment, pose, object, body position, wetness, hair state, accessory, or interrupted action has not returned to neutral.
+
+5. SHE CHOOSES NOT TO RESOLVE IT YET.
+This choice is the erotic hinge. She does not immediately straighten the shirt, fix the strap, close the clasp, move her hand, avert her gaze, cover the skin, or restore perfect posture.
+
+The image lives in that extra second.
+
+INPUT BLOCK
+
+CHARACTER REFERENCE: [@character / image / element / LoRA]
+AGE: [adult age]
+SCENE: [where she is and what time]
+PRIOR ACTION: [what she was doing before the shutter]
+VIEWER HISTORY: [what has been happening between her and the photographer]
+PHYSICAL CAUSE: [body mechanics causing attractive geometry]
+UNRESOLVED STATE: [garment / wetness / hair / pose / object]
+DELIBERATE NON-CORRECTION: [what she chooses not to fix]
+EXPRESSION MECHANICS: [eyes / lids / brow / lips / chin / head angle]
+PRIMARY VISUAL CORRIDOR: [one path]
+CAMERA RELATIONSHIP: [distance / height / angle / lens feel]
+LIGHTING: [what is revealed and withheld]
+ENVIRONMENTAL EVIDENCE: [3–6 traces of previous behavior]
+SENSUALITY LEVEL: [magnetic / heated / erotic / very daring while non-explicit]
+HARD EXCLUSIONS: [scene-specific]
+
+MASTER GENERATION PROMPT
+
+Create ONE vertical 2:3 photograph or premium photoreal image of [CHARACTER_REFERENCE], an unmistakably adult woman age [AGE].
+
+Single frame only. No collage, split frame, contact sheet, or multiple poses.
+
+IDENTITY LOCK
+
+Treat the supplied character reference as authoritative.
+
+Preserve:
+- exact face
+- facial proportions
+- asymmetry
+- eye shape and color
+- nose
+- lips
+- skin tone and texture
+- hairline, color, density and texture
+- established bust
+- natural shoulder width
+- torso length
+- waist placement and width
+- hip width and shape
+- upper-thigh fullness
+- leg proportions
+- tattoos, scars, piercings, freckles and other permanent anchors
+
+Do not redesign her.
+
+Do not spend the rest of the prompt restating these traits. The scene now has priority.
+
+SCENE
+
+[SCENE]
+
+She was already:
+[PRIOR ACTION]
+
+The photographer has already been present long enough that:
+[VIEWER HISTORY]
+
+Avoid the emotional logic of “she suddenly notices the camera” unless deliberately requested.
+
+The viewer should enter a moment that already has history.
+
+BODY GEOMETRY THROUGH PHYSICAL CAUSE
+
+Her attractive body geometry must arise from this physical cause:
+
+[PHYSICAL CAUSE]
+
+Describe weight, balance, joint position, reach, lean, rotation, compression, or momentum.
+
+Examples:
+- she leans back through one wrist, lifting the sternum while both shoulders relax downward
+- one hip remains against the counter while her upper body twists to reach behind her
+- she sits near the bed edge, one thigh compressed and the opposite knee dropped slightly outward
+- she bends to retrieve something without moving her planted feet, creating a natural waist twist
+- she pauses halfway through pulling on a shirt, one elbow still caught above her head
+- she turns from the mirror while one foot remains pointed toward it
+
+Do not use disconnected anatomical commands.
+
+The body should look erotic because the posture has a believable cause.
+
+THE UNRESOLVED STATE
+
+The current unresolved physical state is:
+
+[UNRESOLVED STATE]
+
+Good states include:
+- front clasp undone
+- one or two buttons open from changing
+- shirt hanging from elbows
+- robe fallen from shoulders
+- strap displaced
+- wet clothing clinging after water
+- thin fabric twisted after movement
+- stocking halfway adjusted
+- hem pulled slightly out of place from sitting
+- necklace shifted off-center
+- damp hair sticking to the neck
+- one shoe off
+- sheet kicked aside
+- towel loose around the shoulders
+- zipper partly lowered
+- sleeve trapped around one forearm
+
+Keep the state believable and character-native.
+
+The erotic power comes from instability, transition, and anticipation, not from random exposed skin.
+
+DELIBERATE NON-CORRECTION
+
+She is fully aware that [DELIBERATE NON-CORRECTION].
+
+She could fix it immediately.
+
+She does not.
+
+She allows the condition to remain for one more beat because she knows the photographer is looking.
+
+Do not make her embarrassed unless embarrassment is explicitly part of the character beat.
+
+This should feel intentional, self-possessed, intimate, teasing, challenging, affectionate, dominant, amused, or quietly daring according to her personality.
+
+EXPRESSION MECHANICS
+
+Construct the expression physically:
+
+[EXPRESSION MECHANICS]
+
+Always prefer drawable facial mechanics over generic mood words.
+
+Useful controls:
+- direct / interrupted / sideways gaze
+- upper lids heavy / alert / narrowed
+- one brow slightly raised
+- lips together / relaxed / barely parted
+- tiny asymmetrical smile
+- lower lip catching light
+- chin down a few degrees
+- chin slightly raised
+- head tilted without breaking eye contact
+- breath visible through a subtly open mouth
+
+The face is the primary erotic organ of the composition.
+
+PRIMARY VISUAL CORRIDOR
+
+The image has ONE dominant erotic path:
+
+[PRIMARY VISUAL CORRIDOR]
+
+Examples:
+eyes → lips → throat → undone clasp
+eyes → mouth → bare shoulder → fallen strap
+eyes → hand → waist → low hip line
+eyes → turned back → waist → nearest hip
+eyes → collarbone → damp fabric → hand
+eyes → thigh → stocking edge
+
+Do not light or pose every attractive feature equally.
+
+Hierarchy is hotter than clutter.
+
+CAMERA RELATIONSHIP
+
+[CAMERA RELATIONSHIP]
+
+The camera must have a physical relationship to her.
+
+Choose deliberately:
+
+SLIGHTLY LOW:
+She occupies the space above the viewer. Good for confidence, control, throat/jaw lines, lifted posture.
+
+EYE LEVEL:
+Mutual intimacy. Good for closeness, sincerity, sustained eye contact.
+
+SLIGHTLY HIGH:
+Can create vulnerability, playfulness, or invitation without infantilizing the adult subject.
+
+CLOSE THREE-QUARTER:
+Strong proximity and body turn.
+
+SIDE / LOOK-BACK:
+Excellent for waist-to-hip geometry and charged eye contact.
+
+LONGER LENS:
+More observational, less participatory. Use only when desired.
+
+Prefer camera distances that feel like another person is actually in the room.
+
+Do not default to perfectly centered fashion photography.
+
+CONTROLLED VISIBILITY
+
+Eroticism depends partly on what the image does not fully reveal.
+
+Use:
+- hair crossing one small region
+- fabric edge
+- hand placement
+- shadow
+- crop
+- shoulder angle
+- sheets
+- partial profile
+- depth of field
+
+to create controlled access.
+
+Do not illuminate every attractive feature equally.
+
+The viewer should sometimes need a second look.
+
+CLOTHING STATE OVER CLOTHING TYPE
+
+Do not ask only:
+“What is she wearing?”
+
+Ask:
+“What is the garment doing right now?”
+
+Examples:
+- clasp open but garment still resting in place
+- shirt completely open and caught at the elbows
+- damp tank stuck unevenly to the torso
+- skirt twisted a few centimeters from sitting sideways
+- robe tie loose and trailing
+- oversized shirt falling off one shoulder
+- bikini ties wet and flattened to the hip
+- camisole strap displaced by movement
+
+Material behavior matters:
+lace stretches;
+wet cotton darkens and clings;
+silk slips;
+linen grows heavy;
+knit rides and bunches;
+denim creases;
+thin straps shift;
+metal jewelry catches isolated highlights.
+
+THE MODEL SHOULD SEE PHYSICS, NOT “SEXINESS.”
+
+LIGHTING
+
+[LIGHTING]
+
+Use selective light as controlled access.
+
+Default high-erotic setup:
+- warm practical key on one side
+- cool environmental rim on the opposite edge
+- little or no flat fill
+- deep but readable shadow under jaw, throat, body contours, and fabric
+- specular highlights on lips, eyes, jewelry, damp skin, satin, lace, glass
+- enough darkness that the viewer’s eye is guided rather than handed everything
+
+Do not allow beauty lighting to flatten the erotic geometry.
+
+Skin should retain:
+pores, natural texture, peach fuzz, under-eye detail, fine hair, lip texture, realistic sheen, small tonal imperfections.
+
+ENVIRONMENTAL EVIDENCE
+
+[ENVIRONMENTAL EVIDENCE]
+
+The setting should contain traces of what happened before the frame.
+
+Examples:
+- dented second pillow
+- lipstick mark on a glass
+- paperback face-down
+- robe tossed where it was removed
+- wet footprints
+- damp towel
+- two drinks instead of one
+- open drawer
+- jewelry left on a vanity
+- half-melted ice
+- condensation on a window
+- phone face-down beside the bed
+- abandoned hair tie
+- kicked-off shoe
+- chair moved unusually close
+- blanket displaced
+- music still playing
+- candle burned low
+
+Objects are not decoration.
+They are evidence.
+
+THE “MIDDLE OF THE INTERACTION” RULE
+
+Do not photograph the beginning.
+
+Photograph the loaded middle.
+
+The viewer should feel that something has already passed between them.
+
+Her attention may imply:
+“I’ve been watching you watch me.”
+“You’re still looking.”
+“I noticed.”
+“I’m not stopping you.”
+“I’m waiting to see what you do next.”
+
+Do not write those words into the image.
+Stage them physically.
+
+EROTIC DENSITY RULE
+
+One image should usually contain:
+- one strong expression
+- one strong body mechanism
+- one unresolved clothing or physical state
+- one dominant camera relationship
+- one focal corridor
+- one lighting contrast
+- 3–6 environmental clues
+
+More is not automatically hotter.
+
+Do not stack six wardrobe accidents, five props, three body twists, and four expressions into one frame.
+
+Erotic imagery needs oxygen.
+
+SCENE ARCHETYPE LIBRARY
+
+Use these as structural inspiration, never as mandatory templates:
+
+BEDROOM AFTER HOURS
+She has been sitting or changing for several minutes. Clothing is partly unresolved. Viewer presence is established. Practical light + cool window. Rumpled evidence.
+
+BATHROOM / VANITY
+She is halfway through makeup, skincare, drying hair, fastening jewelry, or dressing. Mirror is secondary; her attention shifts to the viewer. Dampness and straps naturally create material states.
+
+KITCHEN AT NIGHT
+Barefoot, refrigerator light, half-finished drink, oversized shirt or lounge clothes, one hip against counter, viewer already nearby.
+
+ROOFTOP HEAT
+Wet skin, swimsuit, open shirt, city glow, cheap improvised cooling setup, clothing displaced by water and movement.
+
+BALCONY / WINDOW
+Night air, robe or thin sleepwear, glass in hand, hair disturbed by breeze, shoulder or strap shifted naturally.
+
+HOTEL ROOM
+Suitcase open, jewelry out, dress partly changed, shoes discarded, bed untouched or recently disturbed depending on narrative.
+
+LAUNDRY / DOMESTIC
+Ordinary task becomes intimate through body mechanics, clothing state, and sustained viewer attention, not through random glamour posing.
+
+POST-EVENT RETURN
+She has just returned from a party, date, concert, work shift, swim, storm, or night out. Makeup slightly worn, shoes off, clothing loosened, energy changed. The image captures decompression while the viewer remains present.
+
+NON-NEGOTIABLE EXCLUSIONS
+
+- childlike or age-ambiguous presentation
+- generic replacement face
+- body redesign
+- unexplained anatomical exaggeration
+- mannequin posing
+- centered fashion-catalog symmetry unless deliberately chosen
+- blank glamour expression
+- random nudity replacing scene logic
+- explicit sexual activity
+- exposed genitals
+- accidental anatomy
+- plastic CGI skin
+- porcelain smoothing
+- giant prompt-generated “sexy” clichés
+- empty luxury backgrounds with no behavioral evidence
+- irrelevant props
+- every body part competing for attention
+- over-lit anatomy
+- character acting as though the camera does not exist when viewer relationship is central
+
+FINAL QUALITY GATE
+
+Reject or revise unless every answer is YES:
+
+1. Is she unmistakably the established character?
+2. Is she unmistakably adult?
+3. Does the prompt trust the reference instead of redundantly redescribing her?
+4. Was she doing something before the shutter?
+5. Has the viewer already been present?
+6. Does she know she is being watched?
+7. Is something physically unresolved?
+8. Could she fix it?
+9. Does she deliberately leave it unresolved for another beat?
+10. Does the attractive body geometry arise from believable physical cause?
+11. Is the expression specified through eyes, lids, brows, mouth, and chin?
+12. Is there one dominant visual corridor?
+13. Does camera height/distance create a relationship?
+14. Does light reveal selectively rather than flatten everything?
+15. Does clothing have a physical state rather than merely a category?
+16. Do materials behave believably?
+17. Does the environment contain behavioral evidence?
+18. Does the frame feel like the middle of an interaction?
+19. Is she actively affecting the person behind the camera?
+20. Would the image still feel erotic if it showed 20% less skin?
+
+If #20 is NO, do not expose more.
+Strengthen eye contact, body mechanics, clothing state, camera relationship, shadow, anticipation, and environmental evidence.
+
+HOUSE FORMULA
+
+REFERENCE
+→ PRIOR ACTION
+→ VIEWER HISTORY
+→ PHYSICAL CAUSE
+→ UNRESOLVED STATE
+→ DELIBERATE NON-CORRECTION
+→ EXPRESSION MECHANICS
+→ CAMERA RELATIONSHIP
+→ ONE VISUAL CORRIDOR
+→ SELECTIVE LIGHT
+→ ENVIRONMENTAL EVIDENCE
+
+The reference tells us who she is.
+
+CONTINUUM stages why we cannot stop looking.
