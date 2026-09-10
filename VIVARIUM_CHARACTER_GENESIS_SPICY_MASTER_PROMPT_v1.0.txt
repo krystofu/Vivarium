@@ -80,7 +80,7 @@ HARD EXCLUSIONS: [character-specific must-nots]
 
 MASTER GENERATION PROMPT
 
-Create ONE vertical photorealistic image of [CHARACTER NAME], an unmistakably adult woman age [ADULT AGE]. Single frame only. No collage, split frame, contact sheet, or multiple poses.
+Create ONE vertical hyper-realistic image of [CHARACTER NAME], an unmistakably adult woman age [ADULT AGE]. Single frame only. No collage, split frame, contact sheet, or multiple poses.
 
 PRIMARY OBJECTIVE
 
@@ -300,9 +300,9 @@ Strong default photographic language:
 - mild handheld imperfection
 - shallow but not identity-destroying depth of field
 
-PHOTOREALISM
+HYPER-REALISM
 
-Photorealism is non-negotiable unless another style is explicitly requested.
+Hyper-realism is non-negotiable unless another style is explicitly requested.
 
 Preserve:
 - pores
@@ -410,7 +410,7 @@ Reject or revise unless every answer is YES:
 18. Does the camera feel like another person in the room?
 19. Is the image at least as charged as a daring private lingerie / mid-change photograph?
 20. Would the image still feel intensely erotic with 20% less exposed skin?
-21. Is the result photoreal enough to read as a real photograph?
+21. Is the result hyper-realistic enough to read as a real photograph?
 22. Is the image useful as the permanent reference for future generations?
 
 If #19 is NO, increase erotic pressure through action, clothing state, proximity, camera relationship, material behavior, or deliberate non-correction.
@@ -441,7 +441,7 @@ SELECTIVE PHOTOGRAPHIC LIGHT
 +
 LIVED-IN EVIDENCE
 +
-PHOTOREAL HUMAN IMPERFECTION
+HYPER-REALISTIC HUMAN IMPERFECTION
 
 GENESIS SPICY does not create a neutral reference and decorate it with sex appeal.
 It creates a reference whose truth is revealed through a charged private moment.
