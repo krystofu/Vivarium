@@ -1,0 +1,524 @@
+VIVARIUM CHARACTER CONTINUUM SPICY MASTER PROMPT v1.0
+Canonical Existing-Character Identity Lock + High-Heat Scene System
+
+PURPOSE
+
+Use this master ONLY when the character already has a trusted visual reference, saved identity, character slot, LoRA, face reference, element, or equivalent anchor.
+
+CONTINUUM SPICY does NOT spend prompt space rebuilding the woman.
+The reference already establishes who she is.
+The prompt spends its budget on the charged moment.
+
+CORE PRINCIPLE
+
+CONTINUUM SPICY SPENDS TRUTH ON TEMPTATION.
+
+Identity is locked.
+Everything else exists to create a vivid, active, sexually charged photograph of the SAME woman.
+
+The image should feel like the shutter caught her in the loaded middle of doing something intimate, private, physical, or transitional, not after she stopped and posed for a lingerie catalog.
+
+Every output should answer:
+- What was she doing?
+- What is still moving or unresolved?
+- What is her body doing because of that action?
+- How long has she known the viewer is watching?
+- What does she deliberately refuse to fix yet?
+- What detail rewards a second look?
+- Why does this exact moment feel personal rather than generic?
+
+SPICE FLOOR
+
+The default CONTINUUM SPICY result should be at least as charged as a daring private mid-change lingerie photograph where:
+- the character is already in motion
+- at least one garment or body-adjacent state is unresolved
+- the viewer is physically close
+- her attention is unmistakably directed at the photographer
+- she understands the sexual tension
+- she deliberately lets it continue
+- clothing or material behavior reveals the body through believable cause
+- the frame contains one high-impact erotic discovery
+
+Ordinary glamour posing is a failure.
+A static bikini shot is a failure.
+A pretty dress with cleavage is a failure unless the scene mechanics create equivalent pressure.
+"Sexy" without a physical mechanism is a failure.
+
+INPUT BLOCK
+
+CHARACTER REFERENCE: [@character / image / LoRA / element / saved identity]
+AGE: [adult age]
+IDENTITY DRIFT NOTES: [only if this model has a known failure such as changing hair, bust, hips, skin, or face]
+SCENE: [where she is and what time]
+PRIOR ACTION: [what she was doing before the shutter]
+VIEWER HISTORY: [what has already been happening between her and the photographer]
+PHYSICAL CAUSE: [body mechanics creating the attractive geometry]
+UNRESOLVED STATE: [garment / wetness / hair / pose / accessory / object]
+DELIBERATE NON-CORRECTION: [what she knowingly leaves unresolved]
+EXPRESSION MECHANICS: [eyes / lids / brows / lips / chin / head angle]
+PRIMARY VISUAL CORRIDOR: [one dominant path]
+SECOND-GLANCE REWARD: [one discoverable erotic detail]
+CAMERA RELATIONSHIP: [distance / height / angle / lens feel]
+LIGHTING: [what is revealed and withheld]
+ENVIRONMENTAL EVIDENCE: [3-6 traces of what happened before the frame]
+SITE LANE: [HARD TEASE default / UNCENSORED where supported]
+PHOTOREALISM TARGET: [real private photograph / phone camera / full-frame / etc.]
+HARD EXCLUSIONS: [scene-specific]
+
+MASTER GENERATION PROMPT
+
+Create ONE ultra-photorealistic vertical image of [CHARACTER REFERENCE], an unmistakably adult woman age [AGE]. Single frame only. No collage, split frame, contact sheet, or multiple poses.
+
+IDENTITY LOCK
+
+Treat the supplied character reference as authoritative.
+Preserve the SAME woman.
+
+Preserve her:
+- facial geometry
+- asymmetry
+- eye shape and color
+- nose
+- lips
+- skin tone and natural texture
+- hairline, color, density, length and texture
+- established bust
+- natural shoulder width
+- ribcage / torso length
+- waist placement and width
+- hip width and shape
+- upper-thigh fullness
+- leg proportions
+- tattoos, scars, piercings, freckles, moles, and other permanent anchors
+
+Do not redesign, genericize, slim, widen, inflate, shrink, idealize, age-shift, or replace her.
+
+Known drift notes:
+[IDENTITY DRIFT NOTES]
+
+Do not waste the rest of the prompt repeating a visual biography the reference already contains.
+The scene now has priority.
+
+THE CAUGHT-IN-THE-ACT ENGINE
+
+SCENE:
+[SCENE]
+
+She was already:
+[PRIOR ACTION]
+
+Do not photograph the beginning of the action.
+Do not photograph the clean end-state after she is finished.
+Photograph the loaded middle.
+
+The ideal frame contains kinetic residue from roughly 0.4 seconds earlier:
+- falling fabric
+- hair still shifting
+- strap displaced
+- sleeve still trapped
+- weight not fully settled
+- hand still hooked at clothing
+- wetness still changing fabric behavior
+- hem still twisted
+- stocking not fully adjusted
+- robe still sliding
+- jewelry still displaced
+- one knee or foot still planted from the previous movement
+
+This is the defining Continuum Spicy rule:
+THE PHOTO MUST FEEL TEMPORALLY UNFINISHED.
+
+VIEWER HISTORY
+
+The photographer has already been present long enough that:
+[VIEWER HISTORY]
+
+Avoid "she suddenly notices the camera" as the default.
+She has noticed.
+She has processed the attention.
+She has chosen not to end the moment.
+
+Her gaze, posture, pace, and non-correction should imply that she is now actively affecting the person holding the camera.
+
+The viewer should feel:
+"She knows exactly what I'm looking at."
+"She knows I haven't looked away."
+"She is making the next second worse in the best way."
+
+Do not put these sentences into the image.
+Stage them.
+
+PHYSICAL CAUSE
+
+Her attractive body geometry comes from:
+[PHYSICAL CAUSE]
+
+Build the body through physics:
+- one knee pressed into a mattress while the other leg bears weight
+- pelvis still turned away while shoulders rotate back
+- one wrist taking weight and lifting the sternum
+- one hip pinned lightly against a counter
+- thigh compressed by sitting
+- torso lengthened by reaching
+- waist tightened by a natural twist
+- shoulder dropped because clothing is sliding off it
+- arm caught in a sleeve while the other hand is still occupied
+
+Do not command body parts independently.
+The body should become more erotic because the action creates a believable geometry.
+
+UNRESOLVED STATE
+
+The unresolved state is:
+[UNRESOLVED STATE]
+
+Examples:
+- front clasp undone while the garment still rests in place
+- open shirt hanging from elbows
+- one bra strap fallen
+- robe slipping from both shoulders
+- shorts or underwear waistband still being adjusted
+- stockings only partly positioned
+- wet top clinging after water
+- dress zipper partly lowered while changing
+- camisole twisted from movement
+- skirt or shorts shifted from sitting
+- one shoe removed, the other still on
+- towel loose around shoulders
+- damp hair stuck to the neck
+- sheet kicked aside mid-motion
+
+The erotic power comes from instability and anticipation.
+
+DELIBERATE NON-CORRECTION
+
+She is fully aware that:
+[DELIBERATE NON-CORRECTION]
+
+She could fix it immediately.
+She does not.
+
+She slows down, leaves it displaced, keeps her hand where it is, holds the gaze, stays turned, or continues the motion more slowly because she knows the viewer is looking.
+
+This should feel character-native.
+Depending on personality it may read as:
+- playful
+- cute and knowingly provocative
+- quietly lustful
+- teasing
+- affectionate
+- challenging
+- smug
+- dominant
+- shameless
+- soft and inviting
+- amused by the viewer's reaction
+
+Do not replace personality with generic seduction.
+
+EXPRESSION MECHANICS
+
+Construct the expression physically:
+[EXPRESSION MECHANICS]
+
+Useful controls:
+- direct / interrupted / sideways gaze
+- heavy / alert / narrowed upper lids
+- one brow slightly higher
+- lips relaxed / barely parted / softly pressed together
+- tiny asymmetrical smile
+- lower lip catching a highlight
+- chin lowered a few degrees
+- chin slightly raised for control
+- head tilt without breaking eye contact
+
+The face is the first erotic event.
+If the expression is blank, the image fails even if the clothing is revealing.
+
+PRIMARY VISUAL CORRIDOR
+
+Use ONE dominant path:
+[PRIMARY VISUAL CORRIDOR]
+
+Examples:
+- eyes -> mouth -> throat -> undone clasp
+- eyes -> shoulder -> fallen strap -> waist
+- eyes -> hand -> waistband -> hip
+- eyes -> turned back -> waist -> nearest hip
+- eyes -> neckline -> damp fabric -> hand
+- eyes -> thigh -> stocking edge
+
+Do not make every body part scream for attention.
+Hierarchy creates fixation.
+
+SECOND-GLANCE REWARD
+
+The frame contains one detail the viewer may not fully register until looking again:
+[SECOND-GLANCE REWARD]
+
+Examples:
+- the bra clasp is actually open
+- one shirt sleeve is still trapped around her arm
+- her fingers are hooked just inside a waistband edge
+- the wetness has made one area of fabric much more body-readable
+- the robe is being held closed only by the position of one hand
+- the garment has ridden farther out of place than the first glance suggests
+- her body turn reveals more rear curve than expected
+
+One strong discovery is better than a pile of wardrobe accidents.
+
+CLOTHING STATE OVER CLOTHING TYPE
+
+The garment must be doing something.
+
+Strong HARD TEASE options:
+- tiny lace bra + high-cut thong or briefs
+- soft-cup lingerie
+- bralette + tiny lounge shorts
+- open oversized shirt over lingerie
+- silk slip partly being changed
+- robe falling from shoulders
+- fitted camisole with displaced strap
+- swimwear after water
+- bodysuit being adjusted
+- stockings in the middle of being pulled on
+- very short sleepwear or loungewear
+- post-event outfit partially loosened while changing
+
+Material behavior matters:
+- lace stretches
+- elastic indents softly
+- wet cotton clings and darkens
+- silk slips
+- satin catches highlights
+- jersey bunches
+- denim creases
+- fine straps shift
+- knit follows tension
+
+Describe what fabric DOES, not just what it IS.
+
+SITE LANE
+
+HARD TEASE, DEFAULT:
+Push right up to a strong non-explicit boundary. Daring lingerie, high-cut thong-level rear coverage, covered but deep cleavage, open shirts, slipping straps, wet/clinging fabric, mid-change states, strongly suggestive undressing mechanics, and intimate private settings are all valid.
+
+UNCENSORED, WHERE SUPPORTED:
+The same scene architecture may use more revealing adult nudity or explicit exposure when the platform allows it. The erotic logic must still come from viewer history, action, material state, physical cause, expression, and deliberate non-correction rather than raw exposure alone.
+
+Do not make nudity the only thing happening.
+
+CAMERA RELATIONSHIP
+
+[CAMERA RELATIONSHIP]
+
+The camera is physically present in the room.
+Choose the relationship deliberately:
+
+EYE LEVEL:
+Mutual intimacy, closeness, direct tension.
+
+SLIGHTLY LOW:
+Confidence, control, strong body turn, jaw/throat lines.
+
+SLIGHTLY HIGH:
+Playfulness or invitation while preserving unmistakable adult presentation.
+
+CLOSE THREE-QUARTER:
+Strong proximity, waist/hip geometry, and face readability.
+
+SIDE / LOOK-BACK:
+Excellent for an active turn, waist twist, and direct eye contact.
+
+Use natural perspective. Avoid extreme wide-angle distortion unless specifically desired.
+
+PHOTOREALISM
+
+[PHOTOREALISM TARGET]
+
+Photorealism is non-negotiable unless another style is explicitly requested.
+
+Require:
+- genuine pores and skin texture
+- subtle peach fuzz / fine body hair
+- tiny blemishes
+- natural under-eye detail
+- lip texture
+- realistic eyes
+- individual hairs and flyaways
+- plausible skin compression around straps and waistbands
+- fabric tension and wrinkles consistent with the pose
+- natural asymmetry
+- believable hands
+- physically plausible light falloff
+- realistic focus and lens depth
+- authentic sensor grain or phone noise when appropriate
+- no airbrushed plastic perfection
+
+The image should resemble a private spontaneous photograph somebody actually took, not AI artwork, a fashion ad, CGI, an influencer campaign, or a studio glamour shoot.
+
+LIGHTING
+
+[LIGHTING]
+
+Use light as controlled access.
+A reliable default is:
+- warm practical key from one side
+- cool environmental edge from window / doorway
+- restrained fill
+- face and eyes readable
+- deeper shadow under jaw, throat, body contours, and fabric folds
+- selective specular highlights on lips, eyes, jewelry, damp skin, lace, satin, or glass
+
+Do not flatten the body with generic beauty lighting.
+Do not bury identity in darkness.
+
+ENVIRONMENTAL EVIDENCE
+
+[ENVIRONMENTAL EVIDENCE]
+
+Use 3-6 clues that imply what happened before the shutter:
+- unmade bed
+- dropped shirt
+- damp towel
+- open drawer
+- lipstick-marked glass
+- half-finished drink
+- phone face-down beside the bed
+- kicked-off shoe
+- jewelry left on a vanity
+- condensation on a window
+- open makeup item
+- second pillow dented
+- music still playing
+- blanket displaced
+
+Objects are evidence, not decoration.
+
+THE MIDDLE-OF-THE-INTERACTION RULE
+
+Every Continuum Spicy image should feel like something has already passed between the character and viewer.
+
+Do not stage:
+"Here is a hot woman posing."
+
+Stage:
+"She was already doing something private, noticed the effect she was having, and deliberately let the charged part continue."
+
+That distinction is the heart of the system.
+
+EROTIC DENSITY RULE
+
+A strong frame usually contains:
+- one strong expression
+- one strong body mechanism
+- one unresolved state
+- one deliberate non-correction
+- one dominant camera relationship
+- one visual corridor
+- one second-glance reward
+- one lighting contrast
+- 3-6 environmental clues
+
+Do not stack six reveals or four poses into one frame.
+The image needs room to breathe.
+
+VARIATION GOVERNOR
+
+Do NOT turn Continuum Spicy into "black lingerie in bedroom forever."
+
+Vary:
+- activity
+- room
+- time of day
+- camera height
+- camera distance
+- clothing material
+- unresolved state
+- body mechanism
+- emotional power dynamic
+- visual corridor
+- second-glance reward
+
+Possible lived-in archetypes:
+- bedroom while changing
+- bathroom / vanity ritual
+- kitchen at night
+- balcony / open window
+- hotel room return
+- post-party decompression
+- post-swim or post-shower
+- laundry / domestic task
+- dressing for an event
+- coming home from work / concert / date
+- cooling off during heat
+- lazy morning in bed
+- packing / unpacking
+
+The mechanics are canonical.
+The costume is not.
+
+FINAL QUALITY GATE
+
+Reject or revise unless every answer is YES:
+
+1. Is she unmistakably the established character?
+2. Is she unmistakably adult?
+3. Did the prompt trust the reference instead of redundantly redescribing her?
+4. Was she already doing something before the shutter?
+5. Is the frame caught in the middle rather than the beginning or clean end?
+6. Has the viewer already been present?
+7. Does she know she is being watched?
+8. Does she understand the sexual tension?
+9. Is something physically unresolved?
+10. Could she fix it immediately?
+11. Does she deliberately leave it unresolved?
+12. Does the body geometry arise from believable physical cause?
+13. Is the expression physically specified rather than generic?
+14. Is there one dominant visual corridor?
+15. Is there one second-glance reward?
+16. Does clothing behave physically rather than merely exist as wardrobe?
+17. Does the camera feel physically close and relational?
+18. Does the lighting reveal selectively?
+19. Does the environment contain evidence of prior behavior?
+20. Is the image at least as erotically charged as a daring private mid-change lingerie photograph?
+21. Would the image remain hot with 20% less exposed skin?
+22. Does it look like a real spontaneous photograph rather than AI art or glamour advertising?
+23. Does it create a different moment from the previous Continuum image rather than cloning a successful pose?
+
+If #20 is NO, increase erotic pressure through action, clothing instability, viewer awareness, non-correction, material behavior, proximity, or scene choice.
+
+If #21 is NO, do not simply expose more. Strengthen gaze, timing, physical cause, anticipation, and second-glance reward.
+
+HOUSE FORMULA
+
+REFERENCE LOCK
++
+PRIVATE ACTION
++
+VIEWER HISTORY
++
+TEMPORALLY UNFINISHED FRAME
++
+PHYSICAL CAUSE
++
+UNRESOLVED STATE
++
+DELIBERATE NON-CORRECTION
++
+CHARACTER-NATIVE SEXUAL INTENT
++
+ONE VISUAL CORRIDOR
++
+SECOND-GLANCE REWARD
++
+SELECTIVE LIGHT
++
+LIVED-IN EVIDENCE
++
+PHOTOREAL HUMAN IMPERFECTION
+
+The reference tells the model who she is.
+Continuum Spicy decides what she is doing to the viewer right now.
+
+END OF VIVARIUM CHARACTER CONTINUUM SPICY MASTER PROMPT v1.0
