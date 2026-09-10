@@ -1,0 +1,340 @@
+VIVARIUM CHARACTER GENESIS MASTER PROMPT v2.0
+Canonical New-Character Identity + Erotic Reference Image System
+
+PURPOSE
+
+Use this master ONLY when creating a brand-new adult character who does not yet have a trusted visual reference.
+
+The output must do two jobs at once:
+
+1. Establish a highly specific, reusable visual identity that later image models can reference reliably.
+2. Produce a sensual, erotic, emotionally alive first image that makes the character immediately desirable rather than clinical or sterile.
+
+The canonical image is not a passport photo, turnaround sheet, mannequin render, or generic pin-up. It is a reference-grade erotic portrait: clean enough to expose the character’s true face and proportions, charged enough to make the viewer want more.
+
+CORE PRINCIPLE
+
+GENESIS ESTABLISHES TRUTH.
+
+Eroticism must come from physical cause, controlled access, body language, clothing state, viewer relationship, camera geometry, selective lighting, and environmental evidence.
+
+Do not rely on repeated adjectives such as “sexy,” “seductive,” “hot,” “provocative,” or “erotic” as substitutes for staging.
+
+Describe the conditions that cause the image to feel erotic.
+
+REFERENCE-GRADE EROTICISM
+
+The first canonical image must preserve useful visual information.
+
+Prioritize:
+- unmistakably adult age
+- face fully readable
+- both eyes visible unless a tiny natural hair overlap occurs
+- hairline and hairstyle readable
+- shoulder width readable
+- bust shape readable through clothing
+- torso length readable
+- natural waist position readable
+- hip width and shape readable
+- upper-thigh fullness readable
+- leg length readable
+- tattoos, scars, piercings, freckles, beauty marks, and permanent anchors visible when practical
+- minimal perspective distortion
+- no major limb crossing that hides the torso
+- no dramatic fabric mass hiding the body
+- no extreme foreshortening
+- no deep shadow swallowing half the body
+- no pose that falsely exaggerates or compresses natural proportions
+
+The character may be intensely sensual, but the image must remain useful as a future identity reference.
+
+CHARACTER INPUT BLOCK
+
+CHARACTER NAME: [name]
+ADULT AGE: [specific adult age, preferably 21+]
+CORE FANTASY: [what makes this woman immediately compelling]
+PERSONALITY: [3–6 defining traits]
+FACE ARCHITECTURE: [face shape, cheek structure, eyes, brows, nose, lips, jaw, asymmetries]
+SKIN: [tone, undertone, texture, freckles, scars, beauty marks]
+HAIR: [color, length, density, texture, part, habitual styling, flyaways]
+BODY ARCHITECTURE:
+- height impression: [short / medium / tall]
+- shoulders: [narrow / balanced / broad]
+- ribcage / upper frame: [compact / average / long]
+- bust: [shape and fullness]
+- torso: [short / medium / long]
+- waist: [shape and definition]
+- hips: [width, roundness, high/low-set impression]
+- thighs: [slim / athletic / soft / full]
+- legs: [relative length and shape]
+- overall silhouette: [pear / hourglass / athletic / slim / soft / etc.]
+PERMANENT ANCHORS: [tattoos, piercings, scars, moles, distinctive teeth, etc.]
+MAKEUP / GROOMING: [character-native, not generic glam]
+CANONICAL FASHION LANE: [what she naturally wears]
+SIGNATURE COLOR / MATERIAL: [optional]
+SETTING: [simple lived-in environment with minimal occlusion]
+RELATIONAL BEAT: [how she is interacting with the camera]
+CANONICAL CLOTHING STATE: [sensual but reference-safe]
+CAMERA: [normally eye-level or slightly low, modest perspective]
+LIGHTING: [selective but identity-readable]
+HARD EXCLUSIONS: [character-specific must-nots]
+
+MASTER GENERATION PROMPT
+
+Create ONE vertical 2:3 photograph or premium photoreal character image of [CHARACTER NAME], an unmistakably adult woman age [ADULT AGE]. Single frame only. No collage, split frame, contact sheet, or multiple poses.
+
+PRIMARY OBJECTIVE
+
+Create a visually addictive new woman whose identity is specific enough to remain recognizable across future generations.
+
+The image must immediately communicate:
+- who she is
+- what her body actually looks like
+- what kind of attention she gives the viewer
+- why someone would want to click on her
+- enough permanent visual truth for later models to reproduce her
+
+She must not look like a generic “beautiful woman” template.
+
+IDENTITY ARCHITECTURE
+
+Face:
+[FACE ARCHITECTURE]
+
+Skin:
+[SKIN]
+
+Hair:
+[HAIR]
+
+Body:
+[BODY ARCHITECTURE]
+
+Permanent anchors:
+[PERMANENT ANCHORS]
+
+Makeup / grooming:
+[MAKEUP / GROOMING]
+
+Treat these as canonical facts. Do not beautify them into a different woman. Do not average away asymmetry. Do not substitute a generic influencer face, generic anime face, plastic glamour face, or cosmetic-surgery perfection.
+
+Her attractiveness must come from the specificity of her actual design.
+
+REFERENCE VISIBILITY RULE
+
+Stage her so the natural body can be understood at a glance.
+
+Keep:
+- face crisp
+- shoulders unobstructed
+- waist clearly visible
+- both hip lines readable
+- upper thighs visible
+- torso length visible
+- leg proportions visible
+- at least one hand naturally visible
+- hair sufficiently separated from the body that its length and texture can be understood
+
+Avoid poses or props that hide the exact geometry future image models will need.
+
+CANONICAL SENSUALITY
+
+Her first image should feel erotic and sensual without sacrificing identity clarity.
+
+Use sensual clothing that exposes silhouette rather than hiding it.
+
+Strong default options:
+- coordinated soft-cup lingerie
+- fitted bralette + high-cut briefs
+- sleek bodysuit
+- fitted camisole + low-rise shorts
+- close-fitting lounge set
+- slip dress with thin straps
+- bikini in a believable private setting
+
+Choose clothing that reveals the natural shoulder-to-waist-to-hip structure clearly.
+
+Prefer tactile materials:
+lace, ribbed cotton, soft jersey, satin, thin knit, damp fabric, worn denim, silk, fine straps, light linen.
+
+Do not cover the body with giant coats, oversized sweaters, dense accessories, blankets, crossed arms, furniture, or hair unless one small overlap supports the character.
+
+THE GENESIS EROTIC MOMENT ARCHITECTURE
+
+Even this canonical reference image must feel like a living moment.
+
+Answer these five questions in the staging:
+
+1. WHAT WAS SHE DOING BEFORE THE SHUTTER?
+Give her an action that existed before the viewer arrived: changing clothes, doing makeup, drying her hair, sitting after a shower, choosing jewelry, reading in bed, drinking at the kitchen counter, stepping out onto a balcony, adjusting a stocking, cooling off beside an open window.
+
+2. WHAT PHYSICALLY CHANGED?
+One small thing should be unresolved:
+- strap slipped
+- clasp undone
+- shirt unbuttoned
+- robe fallen to elbows
+- hem ridden slightly higher from sitting
+- wet fabric clinging
+- hair partly damp
+- necklace displaced
+- one shoe kicked off
+- one stocking only partly adjusted
+
+3. HOW LONG HAS SHE KNOWN THE VIEWER IS THERE?
+Avoid “she suddenly notices the camera.”
+Prefer an already-established exchange.
+She has been aware of the photographer for several seconds and is deliberately continuing.
+
+4. WHAT IS SHE NOT FIXING YET?
+She should consciously allow one harmless physical imperfection or clothing state to remain unresolved for another beat.
+
+5. WHAT IS THE SINGLE VISUAL CORRIDOR?
+Choose one:
+eyes → mouth → neckline
+eyes → throat → clasp
+eyes → shoulder → fallen strap
+eyes → waist → hip line
+eyes → hand → hem
+eyes → back turn → hip
+
+Do not make every body part compete equally.
+
+BODY GEOMETRY THROUGH CAUSE
+
+Never pose anatomy as disconnected display.
+
+Describe physical causes:
+- weight through one wrist lifts the chest and drops the shoulder line
+- leaning into a vanity creates a waist bend and hip shift
+- sitting on the edge of a bed compresses one thigh and relaxes the other
+- reaching for a glass rotates the torso while the pelvis stays planted
+- crossing one ankle shifts the pelvis without distorting proportions
+
+The body should look attractive because of believable mechanics.
+
+Do not say only:
+“emphasize her hips”
+“show cleavage”
+“make her curves pop”
+
+Create the body geometry through posture and action.
+
+EXPRESSION CONSTRUCTION
+
+Do not use “seductive expression” as the whole instruction.
+
+Specify:
+- eye direction
+- lid position
+- brow asymmetry
+- mouth opening
+- smile amount
+- chin angle
+- head tilt
+
+Default erotic facial mechanics:
+steady eye contact;
+upper lids slightly heavy;
+one brow marginally higher;
+lips relaxed and slightly parted;
+a tiny asymmetrical smile rather than a full grin;
+chin lowered or tilted by a few degrees depending on the power dynamic.
+
+Her face must remain emotionally specific and canonical.
+
+CAMERA RELATIONSHIP
+
+The camera represents a person she can see.
+
+For canonical reference images:
+- distance: roughly 4–7 feet
+- lens feel: 50–85mm equivalent or a natural phone portrait distance
+- height: eye level or only slightly low
+- perspective distortion: restrained
+- crop: ideally head to below knees or full body
+- keep body proportions truthful
+
+The camera should feel intimate without falsifying anatomy.
+
+LIGHTING
+
+Use selective sensual lighting while keeping identity readable.
+
+A strong default:
+- one warm practical key
+- soft cool environmental edge
+- enough shadow for depth
+- no flat beauty fill
+- no harsh blackout of half the face
+- eyes remain readable
+- waist and hip silhouette remain readable
+
+Allow shadow to withhold information, but not so much that the image becomes a bad reference.
+
+ENVIRONMENTAL EVIDENCE
+
+Use 3–5 traces of recent behavior, not decorative clutter.
+
+Examples:
+- second pillow dented
+- lipstick-marked glass
+- face-down paperback
+- robe tossed nearby
+- open jewelry box
+- hair clip on the counter
+- damp towel
+- half-finished drink
+- kicked-off shoe
+- phone left unlocked beside her
+- condensation on a window
+- makeup item still open
+
+Each object should imply what was happening before the frame.
+
+EROTICITY WITHOUT GENERIC PIN-UP ENERGY
+
+The viewer should feel:
+“She was already doing something.”
+“I was already there.”
+“She knows I’m looking.”
+“She has chosen not to interrupt the moment.”
+“The next second matters.”
+
+Do not turn her into a studio model posing for anonymous approval.
+
+She must feel like a specific adult woman making a specific choice toward the person holding the camera.
+
+CANONICAL REFERENCE SAFETY GATE
+
+Reject or revise if any answer is NO:
+
+1. Is she unmistakably adult?
+2. Is her face distinctive rather than generic?
+3. Are both facial identity and natural asymmetry readable?
+4. Can future models infer her real shoulder width?
+5. Can future models infer her torso length?
+6. Can future models infer her natural waist placement and width?
+7. Can future models infer her hip width and shape?
+8. Can future models infer upper-thigh fullness?
+9. Is the pose attractive without distorting her body?
+10. Is the image erotic or sensual without becoming reference-useless?
+11. Is there one unresolved physical or clothing state?
+12. Has she been aware of the viewer before the shutter?
+13. Is she deliberately allowing the charged moment to continue?
+14. Is there one dominant visual corridor rather than anatomical clutter?
+15. Does the environment contain evidence of a life rather than generic set dressing?
+16. Would this image make a strong canonical identity reference for later generations?
+17. Would someone still find her compelling if the image were cropped above the bust?
+
+If #17 is NO, strengthen face, attitude, identity, and relationship before increasing exposure.
+
+FINAL HOUSE RULE
+
+GENESIS IS NOT THE HOTTEST IMAGE SHE WILL EVER HAVE.
+
+It is the image that makes every hotter future image possible.
+
+Make it clean enough to establish truth.
+Make it sensual enough that nobody mistakes “reference image” for “boring image.”
+Make her a person first, then make the viewer want access to that person.
