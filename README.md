@@ -1,5 +1,9 @@
 # Vivarium
 
+## Gen 2 Character Encyclopedia
+
+The [Character Encyclopedia](encyclopedia/README.md) is the custom visual library for character profiles, render galleries, and protected canonical identity references. Run it locally with `cd encyclopedia` and `npm start`. Personal data and images stay outside version control.
+
 ## Canonical character image pipeline
 
 - `VIVARIUM_CHARACTER_GENESIS_MASTER_PROMPT_v2.0.txt` — canonical new-character / no-reference identity + hyper-realistic reference system.

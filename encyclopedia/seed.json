@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "characters": [{
+    "id": "zara-solano", "name": "Zara Solano", "generation": 2, "sequence": 1,
+    "canonStatus": "Building", "foundryStatus": "Not run", "primaryAssetId": null,
+    "summary": "The first character in the Gen 2 collection. Her identity reference leads; her deeper character profile is still being built.",
+    "tags": ["Visual-first"], "profile": {},
+    "identity": {"immutable": "", "signature": "", "flexible": ""},
+    "provenance": [], "extensions": {}
+  }],
+  "assets": [],
+  "events": []
+}
