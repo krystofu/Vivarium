@@ -21,7 +21,7 @@ The production build runs on ChatGPT Sites with a durable SQL library and privat
 The app exposes the same safe character operations in two places:
 
 - **ChatGPT Work / Codex:** page tools are available while the live site is open in the built-in browser.
-- **Ordinary ChatGPT chats:** connect the site's `/mcp` URL as a custom app. OAuth grants read/write access to the owner account; every write records its source, and identity images still require explicit review in the website.
+- **Ordinary ChatGPT chats:** connect the site's `/api/mcp` URL as a custom app. OAuth grants read/write access to the owner account; every write records its source, and identity images still require explicit review in the website.
 
 Builds are bundled with `npm run build`. Database migrations live in `drizzle/`; `.openai/hosting.json` binds the SQL database as `DB` and image storage as `BUCKET`. `SITE_ORIGIN` must equal the public site origin.
 

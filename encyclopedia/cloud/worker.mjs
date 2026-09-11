@@ -34,7 +34,7 @@ export default {
         return await oauth(request,env);
       }
       const store=cloudStore(env,seed);
-      if(path==='/mcp') {
+      if(path==='/api/mcp') {
         const auth=await authenticatedToken(request,env);
         if(!auth)return new Response(JSON.stringify({error:'unauthorized'}),{status:401,headers:{...headers,'Content-Type':'application/json','WWW-Authenticate':`Bearer resource_metadata="${env.SITE_ORIGIN}/.well-known/oauth-protected-resource", scope="characters:read characters:write"`}});
         if(Number(request.headers.get('content-length'))>100000)fail(413,'Tool request too large.');
@@ -42,7 +42,7 @@ export default {
       }
       if(path==='/styles.css'||path==='/favicon.svg') {const a=staticAssets[path];return new Response(a.body,{headers:{...headers,'Content-Type':a.type}});}
       const user=request.headers.get('oai-authenticated-user-id');
-      if(path==='/api/session')return json({signedIn:!!user,userId:user||null,ownerConfigured:!!await getOwner(env),hosted:true,connectionUrl:env.SITE_ORIGIN+'/mcp'});
+      if(path==='/api/session')return json({signedIn:!!user,userId:user||null,ownerConfigured:!!await getOwner(env),hosted:true,connectionUrl:env.SITE_ORIGIN+'/api/mcp'});
       if(!user) {
         if(!path.startsWith('/api/')&&!path.startsWith('/media/'))return Response.redirect(env.SITE_ORIGIN+'/signin-with-chatgpt?return_to='+encodeURIComponent(path+url.search),302);
         return json({error:'Please sign in to open your library.'},401);

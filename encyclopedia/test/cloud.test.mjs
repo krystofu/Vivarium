@@ -32,14 +32,14 @@ test('OAuth discovery, registration, owner consent and PKCE token exchange work'
   let response=await f.anonymous('/oauth/register',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({client_name:'ChatGPT',redirect_uris:['https://chatgpt.com/connector_platform_oauth_redirect'],token_endpoint_auth_method:'none'})});
   assert.equal(response.status,201);const client=await response.json();
   const verifier='A'.repeat(43),digest=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(verifier)),challenge=Buffer.from(digest).toString('base64url');
-  const params=new URLSearchParams({client_id:client.client_id,redirect_uri:'https://chatgpt.com/connector_platform_oauth_redirect',response_type:'code',code_challenge:challenge,code_challenge_method:'S256',resource:f.origin+'/mcp',scope:'characters:read characters:write',state:'state-1'});
+  const params=new URLSearchParams({client_id:client.client_id,redirect_uri:'https://chatgpt.com/connector_platform_oauth_redirect',response_type:'code',code_challenge:challenge,code_challenge_method:'S256',resource:f.origin+'/api/mcp',scope:'characters:read characters:write',state:'state-1'});
   response=await f.request('/oauth/authorize?'+params,{redirect:'manual'});assert.equal(response.status,200,await response.clone().text());assert.match(await response.text(),/Approve connection/);
   params.set('decision','approve');response=await f.request('/oauth/authorize',{method:'POST',redirect:'manual',headers:{Origin:f.origin,'Content-Type':'application/x-www-form-urlencoded'},body:params});
   assert.equal(response.status,302);const callback=new URL(response.headers.get('location')),code=callback.searchParams.get('code');assert.ok(code);assert.equal(callback.searchParams.get('iss'),f.origin);
-  const tokenBody=new URLSearchParams({grant_type:'authorization_code',client_id:client.client_id,redirect_uri:'https://chatgpt.com/connector_platform_oauth_redirect',code,code_verifier:verifier,resource:f.origin+'/mcp'});
+  const tokenBody=new URLSearchParams({grant_type:'authorization_code',client_id:client.client_id,redirect_uri:'https://chatgpt.com/connector_platform_oauth_redirect',code,code_verifier:verifier,resource:f.origin+'/api/mcp'});
   response=await f.anonymous('/oauth/token',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:tokenBody});assert.equal(response.status,200);const token=await response.json();assert.equal(token.token_type,'Bearer');assert.ok(token.access_token);
-  assert.equal((await f.anonymous('/mcp')).status,401);
-  response=await f.anonymous('/mcp',{method:'POST',headers:{Authorization:`Bearer ${token.access_token}`,'Content-Type':'application/json',Accept:'application/json, text/event-stream'},body:JSON.stringify({jsonrpc:'2.0',id:1,method:'initialize',params:{protocolVersion:'2025-06-18',capabilities:{},clientInfo:{name:'test',version:'1'}}})});
+  assert.equal((await f.anonymous('/api/mcp')).status,401);
+  response=await f.anonymous('/api/mcp',{method:'POST',headers:{Authorization:`Bearer ${token.access_token}`,'Content-Type':'application/json',Accept:'application/json, text/event-stream'},body:JSON.stringify({jsonrpc:'2.0',id:1,method:'initialize',params:{protocolVersion:'2025-06-18',capabilities:{},clientInfo:{name:'test',version:'1'}}})});
   assert.equal(response.status,200);assert.equal((await response.json()).result.serverInfo.name,'Vivarium Character Encyclopedia');
 });
 test('linked renders stay in Review and cross-origin writes are rejected',async t=>{

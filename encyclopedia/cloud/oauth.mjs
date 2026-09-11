@@ -12,7 +12,7 @@ export async function authenticatedToken(request,env) {
   const value=request.headers.get('authorization')?.match(/^Bearer (\S+)$/i)?.[1];if(!value)return null;
   const row=await env.DB.prepare('SELECT payload FROM oauth_grants WHERE hash = ? AND kind = ? AND expires > ?').bind(await hash(value),'access',now()).first();
   if(!row)return null;const data=JSON.parse(row.payload);
-  const owner=await getOwner(env);if(!owner||data.owner!==owner||data.resource!==env.SITE_ORIGIN+'/mcp')return null;
+  const owner=await getOwner(env);if(!owner||data.owner!==owner||data.resource!==env.SITE_ORIGIN+'/api/mcp')return null;
   return data;
 }
 export async function getOwner(env) {return (await env.DB.prepare('SELECT user_id FROM app_owner WHERE id = ?').bind('owner').first())?.user_id||null;}
@@ -34,7 +34,7 @@ async function clientFor(env,id) {
 }
 export async function oauth(request,env) {
   const origin=env.SITE_ORIGIN,url=new URL(request.url),path=url.pathname;
-  if(path==='/.well-known/oauth-protected-resource'||path==='/.well-known/oauth-protected-resource/mcp')return json({resource:origin+'/mcp',authorization_servers:[origin],scopes_supported:scopes});
+  if(path==='/.well-known/oauth-protected-resource'||path==='/.well-known/oauth-protected-resource/api/mcp')return json({resource:origin+'/api/mcp',authorization_servers:[origin],scopes_supported:scopes});
   if(path==='/.well-known/oauth-authorization-server')return json({issuer:origin,authorization_endpoint:origin+'/oauth/authorize',token_endpoint:origin+'/oauth/token',registration_endpoint:origin+'/oauth/register',revocation_endpoint:origin+'/oauth/revoke',response_types_supported:['code'],grant_types_supported:['authorization_code','refresh_token'],code_challenge_methods_supported:['S256'],token_endpoint_auth_methods_supported:['none'],scopes_supported:scopes,authorization_response_iss_parameter_supported:true});
   if(path==='/oauth/register'&&request.method==='POST') {
     const input=await request.json();
@@ -54,7 +54,7 @@ export async function oauth(request,env) {
     const client=await clientFor(env,p.get('client_id'));
     const redirect=p.get('redirect_uri');if(!JSON.parse(client.redirects).includes(redirect))fail(400,'Redirect URI does not match the registered client.');
     if(p.get('response_type')!=='code'||p.get('code_challenge_method')!=='S256'||! /^[A-Za-z0-9_-]{43}$/.test(p.get('code_challenge')||''))fail(400,'Authorization requires an S256 PKCE challenge.');
-    if(p.get('resource')!==origin+'/mcp')fail(400,'Invalid resource audience.');
+    if(p.get('resource')!==origin+'/api/mcp')fail(400,'Invalid resource audience.');
     const requested=(p.get('scope')||scopes.join(' ')).split(' ').filter(Boolean);
     if(!requested.length||requested.some(s=>!scopes.includes(s)))fail(400,'Invalid scopes.');
     if((p.get('state')||'').length>1000)fail(400,'Invalid state.');
@@ -66,7 +66,7 @@ export async function oauth(request,env) {
     const target=new URL(redirect);target.searchParams.set('state',p.get('state')||'');target.searchParams.set('iss',origin);
     if(p.get('decision')!=='approve')target.searchParams.set('error','access_denied');
     else {
-      const code=await saveGrant(env,'code',{owner:user,clientId:client.id,redirect,challenge:p.get('code_challenge'),resource:origin+'/mcp',scope:requested.join(' ')},now()+120);
+      const code=await saveGrant(env,'code',{owner:user,clientId:client.id,redirect,challenge:p.get('code_challenge'),resource:origin+'/api/mcp',scope:requested.join(' ')},now()+120);
       target.searchParams.set('code',code);
     }
     return Response.redirect(target.href,302);
