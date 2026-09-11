@@ -2,11 +2,27 @@
   "schemaVersion": 1,
   "characters": [{
     "id": "zara-solano", "name": "Zara Solano", "generation": 2, "sequence": 1,
-    "canonStatus": "Building", "foundryStatus": "Not run", "primaryAssetId": null,
-    "summary": "The first character in the Gen 2 collection. Her identity reference leads; her deeper character profile is still being built.",
-    "tags": ["Visual-first"], "profile": {},
-    "identity": {"immutable": "", "signature": "", "flexible": ""},
-    "provenance": [], "extensions": {}
+    "canonStatus": "Building", "foundryStatus": "Not run", "primaryAssetId": null, "age": 26,
+    "summary": "Soft facial magnetism, warm auburn identity, and quietly amused access to an ordinary, lived-in world.",
+    "tags": ["Visual-first", "Quietly amused", "Domestic realism"],
+    "profile": {
+      "bodySilhouette": "Short, narrow upper frame with compact ribcage and a natural waist; rounded hips and full soft upper thighs. Preserve the approved image proportions.",
+      "attractionChannel": "Soft face, quietly amused self-awareness, and ordinary domestic access; specific-person magnetism.",
+      "movementLanguage": "Relaxed, compact movement; casual turns toward the viewer; small grooming gestures; ordinary actions create the pose.",
+      "whySheWorks": "Soft expressive face, copper-auburn identity, compact upper frame with strong hip/thigh contrast, and a self-aware viewer beat that feels like access.",
+      "faceArchitecture": "Compact soft-heart face; full cheeks; amber-brown eyes; thick dark brows with subtle asymmetry; plush asymmetric mouth; warm olive skin; very dark auburn-brown hair with copper warmth.",
+      "identityNucleus": "", "contradiction": "", "voice": "", "occupation": "", "privateWorld": "", "relationshipPromise": "", "backstory": ""
+    },
+    "identity": {
+      "immutable": "Face architecture and asymmetry; warm olive skin and natural texture; eye shape; dark auburn-brown/copper hair identity; compact ribcage and narrow upper frame; natural waist; rounded hips and full soft thighs; approved-image proportions.",
+      "signature": "Cream ribbon; small gold hoops; miniature key necklace; copper warmth in the hair; dark red nails; quietly amused half-smile; relaxed off-duty presentation.",
+      "flexible": "Exact ponytail arrangement, loose or down hair, makeup intensity, wardrobe, jewelry layering, setting, time of day, camera distance, activity, and social context."
+    },
+    "provenance": [
+      {"url":"https://www.notion.so/3d86842ccdee8169a20adad245b4e3cb","type":"notion","note":"Established visual canon; deeper profile remains undeveloped.","checkedAt":"2026-09-11"},
+      {"id":"6aa44307-ac7c-83e8-bd31-043a4d530d64","type":"conversation","note":"Gen 2 number 1; Building; Foundry Not Run; supplied primary full identity image."}
+    ],
+    "extensions": {}
   }],
   "assets": [],
   "events": []

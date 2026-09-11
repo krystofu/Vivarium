@@ -2,3 +2,7 @@ data/
 node_modules/
 .env
 test-results/
+dist/
+.wrangler/
+.generated-assets.mjs
+.sites-runtime/

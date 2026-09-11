@@ -3,6 +3,7 @@ import { readFile, writeFile, mkdir, rename, stat } from 'node:fs/promises';
 import { resolve, dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { randomUUID, createHash } from 'node:crypto';
+import { createCharacter, updateCharacter, logRender } from './cloud/service.mjs';
 
 const ROOT = dirname(fileURLToPath(import.meta.url));
 const MAX_IMAGE = 12 * 1024 * 1024;
@@ -64,6 +65,8 @@ export async function createApp({ dataDir = process.env.VIVARIUM_DATA_DIR || joi
         const db = await read();
         return send(200, { ...db, assets: db.assets.map(a => ({ ...a, url: `/media/${a.id}` })) });
       }
+      if (req.method === 'POST' && path === '/api/characters') return send(201, await createCharacter({read,mutate},JSON.parse((await body(req,64000)).toString()),'local-owner'));
+      if (req.method === 'POST' && path === '/api/render-links') return send(201, await logRender({read,mutate},JSON.parse((await body(req,64000)).toString()),'local-owner'));
       if (req.method === 'POST' && path === '/api/assets') {
         const bytes = await body(req, MAX_IMAGE);
         const ext = imageType(bytes);
@@ -103,18 +106,7 @@ export async function createApp({ dataDir = process.env.VIVARIUM_DATA_DIR || joi
       const profileRoute = path.match(/^\/api\/characters\/([a-z0-9-]+)$/);
       if (req.method === 'PATCH' && profileRoute) {
         const input = JSON.parse((await body(req, 64000)).toString());
-        const result = await mutate(db => {
-          const c = db.characters.find(c => c.id === profileRoute[1]);
-          if (!c) fail(404, 'Character not found.');
-          const allowed = ['identityNucleus','contradiction','voice','occupation','privateWorld','relationshipPromise','backstory','attractionChannel','movementLanguage','faceArchitecture','bodySilhouette','whySheWorks'];
-          if (!input.profile || typeof input.profile !== 'object' || Array.isArray(input.profile)) fail(400, 'Profile is required.');
-          for (const [key, value] of Object.entries(input.profile)) {
-            if (!allowed.includes(key)) fail(400, 'Unknown profile field.');
-            c.profile[key] = text(value);
-          }
-          event(db, 'profile-edited', c.id); return c;
-        });
-        return send(200, result);
+        return send(200, await updateCharacter({read,mutate},profileRoute[1],input,'local-owner'));
       }
       const media = path.match(/^\/media\/([a-zA-Z0-9-]+)$/);
       if (req.method === 'GET' && media) {
@@ -123,7 +115,7 @@ export async function createApp({ dataDir = process.env.VIVARIUM_DATA_DIR || joi
         return send(200, await readFile(join(dataDir, 'assets', asset.filename)), asset.mime);
       }
       if (req.method !== 'GET') fail(404, 'Route not found.');
-      const staticFiles = { '/app.js': ['app.js', 'text/javascript'], '/styles.css': ['styles.css', 'text/css'], '/favicon.svg': ['favicon.svg', 'image/svg+xml'] };
+      const staticFiles = { '/app.js': ['app.js', 'text/javascript'], '/site-tools.js': ['site-tools.js', 'text/javascript'], '/styles.css': ['styles.css', 'text/css'], '/favicon.svg': ['favicon.svg', 'image/svg+xml'] };
       if (staticFiles[path]) {
         const [file, type] = staticFiles[path]; return send(200, await readFile(join(ROOT, 'public', file)), type);
       }

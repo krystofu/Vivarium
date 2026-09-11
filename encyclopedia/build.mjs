@@ -1,0 +1,14 @@
+import { build } from 'esbuild';
+import { readFile, writeFile, mkdir, cp } from 'node:fs/promises';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
+const root=dirname(fileURLToPath(import.meta.url));
+const paths={'/index.html':['public/index.html','text/html'],'/app.js':['public/app.js','text/javascript'],'/styles.css':['public/styles.css','text/css'],'/favicon.svg':['public/favicon.svg','image/svg+xml'],'/site-tools.js':['public/site-tools.js','text/javascript']};
+const assets={};for(const [route,[path,type]] of Object.entries(paths))assets[route]={body:await readFile(path,'utf8'),type};
+await writeFile('.generated-assets.mjs',`export default ${JSON.stringify(assets)};`);
+await mkdir('dist/server',{recursive:true});
+await build({entryPoints:[join(root,'cloud/worker.mjs')],absWorkingDir:root,outfile:join(root,'dist/server/index.js'),bundle:true,format:'esm',platform:'browser',target:'es2022',conditions:['workerd','worker','browser'],minify:true});
+await mkdir('dist/.openai',{recursive:true});
+await cp('.openai/hosting.json','dist/.openai/hosting.json');
+await cp('drizzle','dist/.openai/drizzle',{recursive:true});
+console.log('Hosted Worker built with private D1 / R2 storage.');
