@@ -29,11 +29,12 @@ test('hosted library is private, claims one owner, and persists character change
 test('OAuth discovery, registration, owner consent and PKCE token exchange work',async t=>{
   const f=await fixture(t);
   const metadata=await (await f.anonymous('/.well-known/oauth-authorization-server')).json();assert.equal(metadata.issuer,f.origin);assert.ok(metadata.code_challenge_methods_supported.includes('S256'));
+  const openid=await (await f.anonymous('/.well-known/openid-configuration')).json();assert.equal(openid.authorization_endpoint,f.origin+'/oauth/authorize');
   let response=await f.anonymous('/oauth/register',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({client_name:'ChatGPT',redirect_uris:['https://chatgpt.com/connector_platform_oauth_redirect'],token_endpoint_auth_method:'none'})});
   assert.equal(response.status,201);const client=await response.json();
   const verifier='A'.repeat(43),digest=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(verifier)),challenge=Buffer.from(digest).toString('base64url');
   const params=new URLSearchParams({client_id:client.client_id,redirect_uri:'https://chatgpt.com/connector_platform_oauth_redirect',response_type:'code',code_challenge:challenge,code_challenge_method:'S256',resource:f.origin+'/api/mcp',scope:'characters:read characters:write',state:'state-1'});
-  response=await f.request('/oauth/authorize?'+params,{redirect:'manual'});assert.equal(response.status,200,await response.clone().text());assert.match(await response.text(),/Approve connection/);
+  response=await f.request('/oauth/authorize?'+params,{redirect:'manual'});assert.equal(response.status,200,await response.clone().text());assert.match(response.headers.get('content-security-policy'),/form-action 'self' https:\/\/chatgpt\.com/);assert.match(await response.text(),/Approve connection/);
   params.set('decision','approve');response=await f.request('/oauth/authorize',{method:'POST',redirect:'manual',headers:{Origin:f.origin,'Content-Type':'application/x-www-form-urlencoded'},body:params});
   assert.equal(response.status,302);const callback=new URL(response.headers.get('location')),code=callback.searchParams.get('code');assert.ok(code);assert.equal(callback.searchParams.get('iss'),f.origin);
   const tokenBody=new URLSearchParams({grant_type:'authorization_code',client_id:client.client_id,redirect_uri:'https://chatgpt.com/connector_platform_oauth_redirect',code,code_verifier:verifier,resource:f.origin+'/api/mcp'});
