@@ -1,0 +1,11 @@
+VIVARIUM PULSE 0.1.0 STATIC VALIDATION
+JSON parse: PASS
+Entries: 43 (expected 43) PASS
+Agents: 3 (expected 3) PASS
+Variables: 126
+Switches: 4
+Placeholder variable references: PASS
+JavaScript syntax: PASS
+One processMessage per advancedCode entry: PASS
+Chemist bus marker length: 15 / parser slice 15 PASS
+Director bus marker length: 16 / parser slice 16 PASS
