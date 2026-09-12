@@ -4,10 +4,56 @@ const lightbox = document.querySelector('#lightbox');
 const editor = document.querySelector('#editor');
 let library, query = '', filter = 'All characters', tab = 'profile', galleryFilter = 'All images';
 const esc = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const gem = '<img class="gem" src="/favicon.svg" alt="">';
+const gem = '<img class="gem" src="/VIVARIUM_GEM_OFFICIAL_GEN2.png" alt="">';
+const masterLogo = '<img class="brand-master" src="/VIVARIUM_GEM_OFFICIAL_GEN2.png" alt="Official Vivarium Gen 2 logo">';
 const fields = { whySheWorks:'Why she works', faceArchitecture:'Face architecture', bodySilhouette:'Body silhouette', attractionChannel:'Attraction channel', movementLanguage:'Movement language', identityNucleus:'Identity nucleus', contradiction:'Contradiction engine', voice:'Voice', occupation:'Occupation & skills', privateWorld:'Private world', relationshipPromise:'Relationship promise', backstory:'Backstory' };
 const identityFields = {immutable:'Immutable traits',signature:'Signature traits',flexible:'Flexible traits'};
 const authorityRoles = {'primary-identity':['💎','Overall identity'],'face':['◉','Face'],'body':['◇','Body silhouette'],'hair':['⌁','Hair'],'tattoos':['✦','Tattoos'],'style':['◆','Styling / heat'],'expression':['◌','Expression'],'wardrobe':['▱','Wardrobe'],'other':['·','Other']};
+const atmosphereThemes=[
+  {name:'Amethyst archive',accent:'#c7b4f2',secondary:'#805ca8',background:'#111014'},
+  {name:'Copper hush',accent:'#e3a477',secondary:'#9d5d53',background:'#15100f',words:['auburn','copper','warm','domestic','soft','intimate']},
+  {name:'Electric champagne',accent:'#f0d99f',secondary:'#c78aad',background:'#151313',words:['blonde','bright','electric','feminine','gold','direct']},
+  {name:'After-hours emerald',accent:'#9ecbb3',secondary:'#497c6d',background:'#0d1412',words:['green','hazel','botanical','restorer','quiet','measured']},
+  {name:'Midnight signal',accent:'#9eb8ef',secondary:'#596aa4',background:'#0c1018',words:['night','after-hours','nocturnal','calm','blue']},
+  {name:'Velvet voltage',accent:'#e09ad6',secondary:'#8b4fa5',background:'#150d17',words:['alt','punk','goth','provocative','heat','wild']},
+  {name:'Crimson private room',accent:'#e59b9d',secondary:'#934653',background:'#170d10',words:['red','romantic','intense','tempting','private']}
+];
+let activeAtmosphere=null,atmosphereRun=0;
+const hash=value=>[...value].reduce((n,char)=>Math.imul(n^char.charCodeAt(0),16777619)>>>0,2166136261);
+const hexRgb=hex=>[1,3,5].map(index=>parseInt(hex.slice(index,index+2),16));
+const rgbHex=rgb=>'#'+rgb.map(value=>Math.max(0,Math.min(255,Math.round(value))).toString(16).padStart(2,'0')).join('');
+const mix=(a,b,amount)=>rgbHex(hexRgb(a).map((value,index)=>value+(hexRgb(b)[index]-value)*amount));
+function rgbHsl(r,g,b){r/=255;g/=255;b/=255;const max=Math.max(r,g,b),min=Math.min(r,g,b),d=max-min,l=(max+min)/2;let h=0;if(d){if(max===r)h=((g-b)/d)%6;else if(max===g)h=(b-r)/d+2;else h=(r-g)/d+4;h=(h*60+360)%360;}return[h,d?d/(1-Math.abs(2*l-1)):0,l];}
+function hslHex(h,s,l){const c=(1-Math.abs(2*l-1))*s,x=c*(1-Math.abs((h/60)%2-1)),m=l-c/2;let rgb=h<60?[c,x,0]:h<120?[x,c,0]:h<180?[0,c,x]:h<240?[0,x,c]:h<300?[x,0,c]:[c,0,x];return rgbHex(rgb.map(value=>(value+m)*255));}
+function semanticAtmosphere(c){
+  const text=JSON.stringify([c.name,c.summary,c.tags,c.profile,c.identity]).toLowerCase(),variant=c.visualAtmosphere?.variant||0;
+  let best=atmosphereThemes[0],score=0;
+  for(const theme of atmosphereThemes.slice(1)){const next=(theme.words||[]).filter(word=>text.includes(word)).length;if(next>score){best=theme;score=next;}}
+  if(!score)best=atmosphereThemes[(hash(c.id)+variant)%atmosphereThemes.length];
+  else if(variant)best=atmosphereThemes[(atmosphereThemes.indexOf(best)+variant)%atmosphereThemes.length];
+  const motion=/electric|playful|provocative|wild|quick|dance/.test(text)?'shimmer':/calm|quiet|measured|deliberate|still/.test(text)?'drift':/intense|bold|direct/.test(text)?'pulse':'drift';
+  return {...best,motion,strength:c.visualAtmosphere?.strength||'subtle'};
+}
+function setAtmosphere(value){
+  activeAtmosphere=value;const root=document.documentElement;
+  root.style.setProperty('--char-accent',value.accent);root.style.setProperty('--char-secondary',value.secondary);root.style.setProperty('--char-bg',value.background);root.style.setProperty('--accent',mix(value.accent,'#ffffff',.13));
+  document.body.dataset.atmosphere=value.strength||'subtle';document.body.dataset.motion=value.motion||'drift';
+}
+function clearAtmosphere(){setAtmosphere({name:'Vivarium archive',accent:'#c7b4f2',secondary:'#805ca8',background:'#111114',motion:'still',strength:'subtle'});delete document.body.dataset.character;}
+async function sampledAccent(asset,variant=0){
+  if(!asset)return null;const image=new Image();image.src=`/media/${encodeURIComponent(asset.id)}`;
+  try{await image.decode();const canvas=document.createElement('canvas');canvas.width=canvas.height=36;const context=canvas.getContext('2d',{willReadFrequently:true});context.drawImage(image,0,0,36,36);const bins=Array.from({length:12},()=>({weight:0,h:0,s:0,l:0}));const pixels=context.getImageData(0,0,36,36).data;
+    for(let i=0;i<pixels.length;i+=4){if(pixels[i+3]<220)continue;const [h,s,l]=rgbHsl(pixels[i],pixels[i+1],pixels[i+2]);if(s<.16||l<.12||l>.9)continue;const weight=s*(1-Math.abs(l-.55));const bin=bins[Math.floor(h/30)%12];bin.weight+=weight;bin.h+=h*weight;bin.s+=s*weight;bin.l+=l*weight;}
+    const bin=bins.sort((a,b)=>b.weight-a.weight)[0];if(!bin.weight)return null;return hslHex((bin.h/bin.weight+variant*7)%360,Math.max(.42,Math.min(.75,bin.s/bin.weight)),.69);
+  }catch{return null;}
+}
+async function applyAtmosphere(c){
+  document.body.dataset.character=c.id;const run=++atmosphereRun,configured=c.visualAtmosphere||{},base=semanticAtmosphere(c);
+  if(configured.mode==='locked'&&configured.palette){setAtmosphere({...base,...configured.palette,motion:configured.motion||base.motion,strength:configured.strength||base.strength,name:'Locked atmosphere'});return;}
+  setAtmosphere({...base,motion:configured.motion||base.motion});const accent=await sampledAccent(assetFor(c),configured.variant||0);
+  if(run!==atmosphereRun||current()?.id!==c.id||!accent)return;
+  setAtmosphere({...base,accent,secondary:mix(accent,base.secondary,.55),background:mix('#0c0b0f',accent,configured.strength==='immersive'?.19:.1),motion:configured.motion||base.motion,name:`${base.name} · identity sampled`});
+}
 const assetFor = c => library.assets.find(a => a.id === c.primaryAssetId);
 const assetsFor = c => library.assets.filter(a => a.characterId === c.id);
 const authorityFor = c => ({...(c.identityAuthority||{}),...(c.primaryAssetId?{'primary-identity':c.primaryAssetId}:{})});
@@ -27,7 +73,7 @@ async function api(path, options) {
 async function reload() { library = await api('/api/library'); render(); }
 function nav(path) { history.pushState({}, '', path); tab = 'profile'; render(); window.scrollTo(0,0); }
 function frame(content) {
-  app.innerHTML = `<aside class="sidebar"><a class="brand" href="/characters">${gem}<span>VIVARIUM<small>CHARACTER ENCYCLOPEDIA</small></span></a><div class="side-label">YOUR COLLECTION</div><a class="side-link active" href="/characters"><span>▦</span> Characters <b>${library.characters.length}</b></a><div class="side-note"><span class="live-dot"></span> GEN 2 COLLECTION<p>Specific people.<br>Living worlds.</p></div><div class="sidebar-bottom">${gem}<span>Identity comes first.<small>Vivarium · Personal library</small></span></div></aside><div class="workspace"><header class="topbar"><span>THE VIVARIUM ARCHIVE</span><span class="top-status"><i class="live-dot"></i> ${library.hosted ? 'Private cloud library' : 'Local library'}</span></header>${content}<footer>VIVARIUM <span>Every face has a world behind it.</span><span>GENERATION 02</span></footer></div>`;
+  app.innerHTML = `<aside class="sidebar"><a class="brand" href="/characters">${gem}<span>VIVARIUM<small>CHARACTER ENCYCLOPEDIA</small></span></a><div class="side-label">YOUR COLLECTION</div><a class="side-link active" href="/characters"><span>▦</span> Characters <b>${library.characters.length}</b></a><div class="side-note"><span class="live-dot"></span> GEN 2 COLLECTION<p>Specific people.<br>Living worlds.</p></div><div class="sidebar-bottom">${masterLogo}<span>Identity comes first.<small>Official Gen 2 brand lock</small></span></div></aside><div class="workspace"><header class="topbar"><span>THE VIVARIUM ARCHIVE</span><span class="top-status"><i class="live-dot"></i> ${library.hosted ? 'Private cloud library' : 'Local library'}</span></header>${content}<footer>VIVARIUM <span>Every face has a world behind it.</span><span>GENERATION 02</span></footer></div>`;
   app.querySelectorAll('a[href^="/characters"]').forEach(a => a.addEventListener('click', e => { if (!e.ctrlKey && !e.metaKey) { e.preventDefault(); nav(a.getAttribute('href')); } }));
   app.querySelectorAll('img[data-asset]').forEach(img => img.addEventListener('error', () => { const p = document.createElement('div'); p.className = 'missing-image'; p.textContent = 'Reference unavailable · restore the original asset'; img.replaceWith(p); }, { once:true }));
 }
@@ -38,10 +84,10 @@ function picture(asset, className = '', contain = false) {
 function render() {
   if (!library) return;
   document.title = current() ? `${current().name} · Vivarium` : 'Vivarium · Character Encyclopedia';
-  if (location.pathname === '/' || location.pathname === '/characters') return renderCollection();
+  if (location.pathname === '/' || location.pathname === '/characters') {clearAtmosphere();return renderCollection();}
   const c = current();
   if (!c) { frame('<main><h1>Character not found</h1><p>This character is not in your library.</p><a href="/characters">Return to characters →</a></main>'); return; }
-  renderCharacter(c);
+  renderCharacter(c);applyAtmosphere(c);
 }
 function renderCollection() {
   frame(`<main><div class="eyebrow">THE COLLECTION / GENERATION 02</div><div class="page-heading"><div><h1>Characters<span class="heading-dot">.</span></h1><p>A living archive of distinct identities and the worlds they inhabit.</p></div><span class="collection-count">${String(library.characters.length).padStart(2,'0')}<small>CHARACTERS</small></span></div><div class="toolbar"><button id="new-character">+ Add character</button><label class="search"><span>⌕</span><input id="search" type="search" placeholder="Find a character, trait, or world…" aria-label="Search characters" value="${esc(query)}"><kbd>/</kbd></label><label class="select-wrap"><span class="sr-only">Filter characters</span><select id="filter">${['All characters','Identity locked','Building','Foundry ready'].map(v=>`<option ${v===filter?'selected':''}>${v}</option>`).join('')}</select></label></div><div class="result-bar"><span id="result-count"></span><span>CURATED BY IDENTITY <span class="muted">↗</span></span></div><div class="character-grid" id="results"></div><section class="collection-note"><div class="line-icon">${gem}</div><div><h3>One identity. A thousand possible moments.</h3><p>Canonical references preserve who she is. The gallery holds everywhere she goes.</p></div></section></main>`);
@@ -63,11 +109,12 @@ function drawResults() {
 function renderCharacter(c) {
   const assets = assetsFor(c), refs = assets.filter(a => a.kind==='identity');
   const section = tab === 'profile' ? profile(c) : tab === 'gallery' ? gallery(c) : identity(c);
-  frame(`<main class="dossier"><a class="back" href="/characters">← All characters</a><div class="dossier-layout"><aside class="portrait-panel"><button class="hero-image" data-open="${esc(assetFor(c)?.id || '')}" aria-label="Open primary identity reference">${picture(assetFor(c), '', true)}</button><div class="portrait-caption">${gem}<div><strong>${assetFor(c)?.locked ? 'Primary identity · Locked' : 'Primary identity awaits'}</strong><small>FULL IDENTITY REFERENCE</small></div></div><div class="reference-note">The reference owns identity.<br>The next image owns the moment.</div></aside><div class="dossier-content"><div class="eyebrow">CHARACTER DOSSIER <span>/ GEN ${c.generation} — ${String(c.sequence).padStart(2,'0')}</span></div><h1>${esc(c.name)}</h1><div class="status-row">${badge(c.canonStatus)}${badge(`Foundry · ${c.foundryStatus}`)}${c.age ? badge(`${c.age} years`) : ''}</div><p class="intro">${esc(c.summary)}</p><button id="continuum-pack" class="continuum-button"><span>${gem}<b>BUILD CONTINUUM PACK</b></span><small>Identity map · exact originals · generation context</small><i>↗</i></button><nav class="tabs" aria-label="Character sections">${[['profile','Profile',''],['gallery','Gallery',assets.filter(a=>a.kind==='render').length],['identity','Identity References',refs.length]].map(([key,label,count])=>`<button data-tab="${key}" aria-current="${tab===key?'page':'false'}" class="${tab===key?'selected':''}">${label} ${count!==''?`<small>${count}</small>`:''}</button>`).join('')}</nav><div id="section">${section}</div></div></div></main>`);
+  frame(`<main class="dossier"><div class="atmosphere-layer" aria-hidden="true"><i></i><i></i><i></i></div><a class="back" href="/characters">← All characters</a><div class="dossier-layout"><aside class="portrait-panel"><button class="hero-image" data-open="${esc(assetFor(c)?.id || '')}" aria-label="Open primary identity reference">${picture(assetFor(c), '', true)}</button><div class="portrait-caption">${gem}<div><strong>${assetFor(c)?.locked ? 'Primary identity · Locked' : 'Primary identity awaits'}</strong><small>FULL IDENTITY REFERENCE</small></div></div><div class="reference-note">The reference owns identity.<br>The next image owns the moment.</div></aside><div class="dossier-content"><div class="eyebrow">CHARACTER DOSSIER <span>/ GEN ${c.generation} — ${String(c.sequence).padStart(2,'0')}</span></div><h1>${esc(c.name)}</h1><div class="status-row">${badge(c.canonStatus)}${badge(`Foundry · ${c.foundryStatus}`)}${c.age ? badge(`${c.age} years`) : ''}<button id="atmosphere-control" class="atmosphere-chip">✦ Atmosphere · ${c.visualAtmosphere?.mode==='locked'?'Locked':'Auto'}</button></div><p class="intro">${esc(c.summary)}</p><button id="continuum-pack" class="continuum-button"><span>${gem}<b>BUILD CONTINUUM PACK</b></span><small>Identity map · exact originals · generation context</small><i>↗</i></button><nav class="tabs" aria-label="Character sections">${[['profile','Profile',''],['gallery','Gallery',assets.filter(a=>a.kind==='render').length],['identity','Identity References',refs.length]].map(([key,label,count])=>`<button data-tab="${key}" aria-current="${tab===key?'page':'false'}" class="${tab===key?'selected':''}">${label} ${count!==''?`<small>${count}</small>`:''}</button>`).join('')}</nav><div id="section">${section}</div></div></div></main>`);
   app.querySelectorAll('[data-tab]').forEach(b=>b.addEventListener('click',()=>{ tab=b.dataset.tab; render(); }));
   app.querySelectorAll('[data-open]').forEach(b=>b.addEventListener('click',()=>openImage(b.dataset.open)));
   document.querySelector('#edit-profile')?.addEventListener('click',()=>editProfile(c));
   document.querySelector('#continuum-pack')?.addEventListener('click',()=>showContinuumPack(c));
+  document.querySelector('#atmosphere-control')?.addEventListener('click',()=>showAtmosphere(c));
   document.querySelector('#gallery-filter')?.addEventListener('change',e=>{galleryFilter=e.target.value; render();});
   const drop = document.querySelector('#dropzone');
   if (drop) {
@@ -134,6 +181,16 @@ async function saveAuthority(c,a,previous) {
   const button=document.querySelector('#save-authority');button.disabled=true;
   try{await api(`/api/characters/${c.id}/identity-authority`,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({assignments})});await reload();drawViewer();notify('Identity authority map saved.');}
   catch(error){document.querySelector('#viewer-error').textContent=error.message;button.disabled=false;}
+}
+function showAtmosphere(c) {
+  editor.classList.remove('wide');const palette=activeAtmosphere||semanticAtmosphere(c),configured=c.visualAtmosphere||{};
+  editor.innerHTML=`<form class="atmosphere-editor"><div class="section-heading"><div><span class="eyebrow">VISUAL ATMOSPHERE</span><h2>${esc(c.name)} · living palette</h2></div><button type="button" id="close-editor" aria-label="Close atmosphere editor">✕</button></div><p>The dossier reads her canonical identity reference and character DNA automatically. Lock a palette only when you want it to stop evolving.</p><div class="atmosphere-preview" style="--preview-accent:${esc(palette.accent)};--preview-secondary:${esc(palette.secondary)};--preview-bg:${esc(palette.background)}"><span>${gem}</span><div><small>${c.visualAtmosphere?.mode==='locked'?'LOCKED ART DIRECTION':'AUTOMATIC ART DIRECTION'}</small><strong>${esc(palette.name||'Custom atmosphere')}</strong><em>${assetFor(c)?'Canonical identity sampled':'Profile DNA · ready for first identity reference'}</em></div></div><div class="palette-fields"><label>Light<input type="color" name="accent" value="${esc(palette.accent)}"></label><label>Signal<input type="color" name="secondary" value="${esc(palette.secondary)}"></label><label>Room<input type="color" name="background" value="${esc(palette.background)}"></label></div><div class="create-grid"><label class="edit-field">Atmosphere strength<select name="strength"><option value="subtle" ${configured.strength!=='immersive'?'selected':''}>Subtle</option><option value="immersive" ${configured.strength==='immersive'?'selected':''}>Immersive</option></select></label><label class="edit-field">Motion language<select name="motion">${[['drift','Slow drift'],['shimmer','Faceted shimmer'],['pulse','Soft pulse'],['still','Still']].map(([value,label])=>`<option value="${value}" ${(configured.motion||palette.motion)===value?'selected':''}>${label}</option>`).join('')}</select></label></div><div class="atmosphere-actions"><button type="button" class="quiet" id="reset-atmosphere">Reset to Vivarium</button><button type="button" class="quiet" id="regenerate-atmosphere">Regenerate Auto</button><button type="submit">Save & lock atmosphere</button></div><p id="edit-error" role="alert"></p></form>`;
+  document.querySelector('#close-editor').onclick=()=>editor.close();
+  const save=async visualAtmosphere=>{try{await api(`/api/characters/${c.id}`,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({visualAtmosphere})});await reload();editor.close();notify(visualAtmosphere?.mode==='locked'?'Atmosphere locked.':'Automatic atmosphere refreshed.');}catch(error){document.querySelector('#edit-error').textContent=error.message;}};
+  editor.querySelector('form').onsubmit=e=>{e.preventDefault();const data=new FormData(e.target);save({mode:'locked',strength:data.get('strength'),motion:data.get('motion'),variant:configured.variant||0,palette:{accent:data.get('accent'),secondary:data.get('secondary'),background:data.get('background')}});};
+  document.querySelector('#regenerate-atmosphere').onclick=()=>{const data=new FormData(editor.querySelector('form'));save({mode:'auto',strength:data.get('strength'),motion:data.get('motion'),variant:((configured.variant||0)+1)%100});};
+  document.querySelector('#reset-atmosphere').onclick=()=>save(null);
+  editor.showModal();
 }
 async function showContinuumPack(c) {
   try {

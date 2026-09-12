@@ -9,10 +9,11 @@ const base64=bytes=>{let value='';const chunk=32768;for(let i=0;i<bytes.length;i
 const publicAsset=a=>({id:a.id,characterId:a.characterId,title:a.title,mime:a.mime,sha256:a.sha256,byteLength:a.byteLength,kind:a.kind,status:a.status,locked:a.locked,createdAt:a.createdAt});
 
 export async function handleMcp(request,env,store,auth) {
-  const server=new McpServer({name:'Vivarium Character Encyclopedia',version:'0.4.0'});
+  const server=new McpServer({name:'Vivarium Character Encyclopedia',version:'0.5.0'});
   const profile=z.object(Object.fromEntries(profileKeys.map(k=>[k,z.string().max(4000).optional()]))).strict();
   const identity=z.object({immutable:z.string().max(4000).optional(),signature:z.string().max(4000).optional(),flexible:z.string().max(4000).optional()}).strict();
-  const shape={name:z.string().min(1).max(120).optional(),summary:z.string().max(1000).optional(),age:z.number().int().min(21).max(2000).optional(),tags:z.array(z.string().max(60)).max(16).optional(),profile:profile.optional(),identity:identity.optional(),source:z.string().max(2000).optional(),canonStatus:z.enum(['Building','Canon','Archived']).optional(),foundryStatus:z.enum(['Not run','In progress','Complete']).optional()};
+  const atmosphere=z.object({mode:z.enum(['auto','locked']).optional(),strength:z.enum(['subtle','immersive']).optional(),motion:z.enum(['drift','shimmer','pulse','still']).optional(),variant:z.number().int().min(0).max(99).optional(),palette:z.object({accent:z.string().regex(/^#[0-9a-f]{6}$/i).optional(),secondary:z.string().regex(/^#[0-9a-f]{6}$/i).optional(),background:z.string().regex(/^#[0-9a-f]{6}$/i).optional()}).strict().optional()}).strict().nullable();
+  const shape={name:z.string().min(1).max(120).optional(),summary:z.string().max(1000).optional(),age:z.number().int().min(21).max(2000).optional(),tags:z.array(z.string().max(60)).max(16).optional(),profile:profile.optional(),identity:identity.optional(),source:z.string().max(2000).optional(),canonStatus:z.enum(['Building','Canon','Archived']).optional(),foundryStatus:z.enum(['Not run','In progress','Complete']).optional(),visualAtmosphere:atmosphere.optional()};
   function tool(name,title,description,inputSchema,write,handler,meta={}) {
     server.registerTool(name,{title,description,inputSchema,annotations:{readOnlyHint:!write,destructiveHint:write,openWorldHint:false},_meta:{securitySchemes:[{type:'oauth2',scopes:[write?'characters:write':'characters:read']}],...meta}},async input=>{
       const scope=write?'characters:write':'characters:read';

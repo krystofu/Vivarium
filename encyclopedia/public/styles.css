@@ -8,13 +8,16 @@
   --muted:#a5a0ae;
   --accent:#c7b4f2;
   --green:#b4d8b9;
+  --char-accent:#c7b4f2;
+  --char-secondary:#805ca8;
+  --char-bg:#111114;
   font-family:Inter,"Segoe UI",sans-serif;
   font-size:14px}
 *{
   box-sizing:border-box}
 body{
   margin:0;
-  background:var(--bg);
+  background:var(--char-bg);
   color:var(--text)}
 button,input,select,textarea{
   font:inherit}
@@ -69,12 +72,17 @@ small{
   font-size:10px}
 .gem{
   width:29px;
-  height:29px}
+  height:29px;
+  object-fit:cover;
+  object-position:center top;
+  background:#f6f4f1;
+  border-radius:4px;
+  box-shadow:0 0 0 1px #ffffff24}
 .sidebar{
   position:fixed;
   inset:0 auto 0 0;
   width:234px;
-  background:#151518;
+  background:color-mix(in srgb,#151518 90%,var(--char-bg));
   border-right:1px solid var(--border);
   padding:36px 23px;
   display:flex;
@@ -139,16 +147,25 @@ small{
   gap:10px;
   color:#c3bccb;
   font-size:10px}
-.sidebar-bottom .gem{
-  opacity:.45;
-  width:21px}
+.brand-master{
+  width:42px;
+  height:63px;
+  flex:0 0 auto;
+  object-fit:contain;
+  border-radius:5px;
+  background:#f6f4f1;
+  box-shadow:0 7px 20px #0008}
+.sidebar-bottom span{
+  align-self:center}
 .sidebar-bottom small{
   display:block;
   color:#807987;
   font-size:9px;
   margin-top:5px}
 .workspace{
-  margin-left:234px}
+  margin-left:234px;
+  background:radial-gradient(circle at 75% 5%,color-mix(in srgb,var(--char-accent) 8%,transparent),transparent 28%),linear-gradient(180deg,color-mix(in srgb,var(--char-bg) 82%,#111114),var(--char-bg));
+  transition:background .7s ease}
 .topbar{
   height:77px;
   display:flex;
@@ -168,6 +185,38 @@ main{
   max-width:1640px;
   margin:auto;
   min-height:calc(100vh - 155px)}
+.dossier{
+  position:relative;
+  isolation:isolate}
+.dossier>.back,.dossier>.dossier-layout{
+  position:relative;
+  z-index:1}
+.atmosphere-layer{
+  position:absolute;
+  inset:-77px 0 0;
+  z-index:0;
+  overflow:hidden;
+  pointer-events:none;
+  opacity:.54}
+body[data-atmosphere="immersive"] .atmosphere-layer{
+  opacity:.92}
+.atmosphere-layer i{
+  position:absolute;
+  border-radius:50%;
+  filter:blur(65px);
+  mix-blend-mode:screen}
+.atmosphere-layer i:nth-child(1){
+  width:42vw;height:42vw;right:-16vw;top:-18vw;background:color-mix(in srgb,var(--char-accent) 24%,transparent)}
+.atmosphere-layer i:nth-child(2){
+  width:26vw;height:26vw;left:20%;top:32%;background:color-mix(in srgb,var(--char-secondary) 16%,transparent)}
+.atmosphere-layer i:nth-child(3){
+  width:20vw;height:20vw;right:22%;bottom:-8vw;background:color-mix(in srgb,var(--char-accent) 11%,transparent)}
+body[data-motion="drift"] .atmosphere-layer i:nth-child(1){animation:atmosphere-drift 16s ease-in-out infinite alternate}
+body[data-motion="shimmer"] .atmosphere-layer i{animation:atmosphere-shimmer 8s ease-in-out infinite alternate}
+body[data-motion="pulse"] .atmosphere-layer{animation:atmosphere-pulse 5s ease-in-out infinite}
+@keyframes atmosphere-drift{to{transform:translate(-7vw,5vw) scale(1.12)}}
+@keyframes atmosphere-shimmer{to{transform:translate(3vw,-2vw) scale(.82);filter:blur(45px)}}
+@keyframes atmosphere-pulse{50%{opacity:.3}}
 .eyebrow{
   font-size:9px;
   letter-spacing:2px;
@@ -408,6 +457,9 @@ footer span:last-child{
   width:100%;
   background:#19161c;
   border:1px solid #3d3344}
+body[data-character] .hero-image{
+  border-color:color-mix(in srgb,var(--char-accent) 42%,#3e3544);
+  box-shadow:0 24px 80px color-mix(in srgb,var(--char-secondary) 18%,transparent)}
 .hero-image .image-wrap{
   aspect-ratio:9/16}
 .contain>img[data-asset]{
@@ -449,6 +501,13 @@ footer span:last-child{
   display:flex;
   gap:7px;
   flex-wrap:wrap}
+.atmosphere-chip{
+  padding:5px 8px;
+  background:color-mix(in srgb,var(--char-accent) 12%,#211c25);
+  border-color:color-mix(in srgb,var(--char-accent) 38%,#403749);
+  color:var(--char-accent);
+  font-size:9px;
+  line-height:1.2}
 .intro{
   font-size:13px;
   line-height:1.85;
@@ -465,6 +524,9 @@ footer span:last-child{
   border-color:#9772ba;
   box-shadow:0 12px 34px #6d3e8924;
   text-align:left}
+body[data-character] .continuum-button{
+  background:linear-gradient(112deg,color-mix(in srgb,var(--char-secondary) 55%,#31243a),color-mix(in srgb,var(--char-accent) 28%,#251d2c));
+  border-color:color-mix(in srgb,var(--char-accent) 44%,#4c3a57)}
 .continuum-button>span{
   display:flex;
   align-items:center;
@@ -876,6 +938,63 @@ summary{
   line-height:1.5}
 .character-create-form>p{
   margin-bottom:24px}
+.atmosphere-editor>p{
+  font-size:12px}
+.atmosphere-preview{
+  min-height:145px;
+  display:flex;
+  align-items:center;
+  gap:19px;
+  padding:22px;
+  border:1px solid color-mix(in srgb,var(--preview-accent) 45%,#46384d);
+  border-radius:10px;
+  background:radial-gradient(circle at 85% 15%,color-mix(in srgb,var(--preview-accent) 35%,transparent),transparent 38%),linear-gradient(120deg,var(--preview-bg),color-mix(in srgb,var(--preview-secondary) 32%,var(--preview-bg)))}
+.atmosphere-preview>span .gem{
+  width:68px;
+  height:68px;
+  box-shadow:0 10px 38px color-mix(in srgb,var(--preview-accent) 40%,transparent)}
+.atmosphere-preview div{
+  display:flex;
+  flex-direction:column}
+.atmosphere-preview small{
+  color:var(--preview-accent);
+  font-size:8px;
+  letter-spacing:1.8px}
+.atmosphere-preview strong{
+  margin:8px 0 5px;
+  font-family:Georgia,"Times New Roman",serif;
+  font-size:23px;
+  font-weight:400}
+.atmosphere-preview em{
+  color:#bcb1c2;
+  font-size:10px;
+  font-style:normal}
+.palette-fields{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:10px;
+  margin:18px 0 2px}
+.palette-fields label{
+  display:grid;
+  grid-template-columns:1fr 40px;
+  align-items:center;
+  padding:9px 11px;
+  border:1px solid var(--border);
+  border-radius:7px;
+  color:#aa9ab6;
+  font-size:10px}
+.palette-fields input{
+  width:36px;
+  height:28px;
+  padding:2px;
+  border:0;
+  background:none}
+.atmosphere-actions{
+  display:flex;
+  justify-content:flex-end;
+  flex-wrap:wrap;
+  gap:9px;
+  margin-top:20px}
 .form-section{
   border:1px solid #3d3146;
   border-radius:9px;
@@ -1022,6 +1141,8 @@ footer{
 @media(max-width:760px){
   .create-grid,.create-columns{
     grid-template-columns:1fr}
+  .palette-fields{
+    grid-template-columns:1fr}
   .sidebar{
   position:static;
   width:auto;
@@ -1166,5 +1287,6 @@ main{
 @media(prefers-reduced-motion:reduce){
   *{
   scroll-behavior:auto!important;
-  transition:none!important}
+  transition:none!important;
+  animation:none!important}
 }

@@ -104,7 +104,7 @@ export async function createApp({ dataDir = process.env.VIVARIUM_DATA_DIR || joi
         return send(200, await readFile(join(dataDir, 'assets', asset.filename)), asset.mime);
       }
       if (req.method !== 'GET') fail(404, 'Route not found.');
-      const staticFiles = { '/app.js': ['app.js', 'text/javascript'], '/site-tools.js': ['site-tools.js', 'text/javascript'], '/styles.css': ['styles.css', 'text/css'], '/favicon.svg': ['favicon.svg', 'image/svg+xml'] };
+      const staticFiles = { '/app.js': ['app.js', 'text/javascript'], '/site-tools.js': ['site-tools.js', 'text/javascript'], '/styles.css': ['styles.css', 'text/css'], '/favicon.svg': ['favicon.svg', 'image/svg+xml'], '/VIVARIUM_GEM_OFFICIAL_GEN2.png': ['VIVARIUM_GEM_OFFICIAL_GEN2.png', 'image/png'] };
       if (staticFiles[path]) {
         const [file, type] = staticFiles[path]; return send(200, await readFile(join(ROOT, 'public', file)), type);
       }

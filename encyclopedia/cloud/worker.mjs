@@ -8,6 +8,7 @@ import { boundedStream, uploadAsset, originalAsset } from './assets.mjs';
 
 const headers={'Cache-Control':'no-store','X-Content-Type-Options':'nosniff','Referrer-Policy':'no-referrer','Content-Security-Policy':"default-src 'self'; img-src 'self' blob:; style-src 'self'; script-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'"};
 const json=(data,status=200)=>new Response(JSON.stringify(data),{status,headers:{...headers,'Content-Type':'application/json'}});
+const staticBody=asset=>asset.encoding==='base64'?Uint8Array.from(atob(asset.body),character=>character.charCodeAt(0)):asset.body;
 const bounded=(request,max)=>boundedStream(request.body,request.headers.get('content-length'),max);
 const readJson=async req=>JSON.parse(new TextDecoder().decode(await bounded(req,100000)));
 export default {
@@ -29,7 +30,7 @@ export default {
         if(Number(request.headers.get('content-length'))>17*1024*1024)fail(413,'Tool request too large.');
         return await handleMcp(request,env,store,auth);
       }
-      if(path==='/styles.css'||path==='/favicon.svg') {const a=staticAssets[path];return new Response(a.body,{headers:{...headers,'Content-Type':a.type}});}
+      if(path==='/styles.css'||path==='/favicon.svg'||path==='/VIVARIUM_GEM_OFFICIAL_GEN2.png') {const a=staticAssets[path];return new Response(staticBody(a),{headers:{...headers,'Content-Type':a.type}});}
       const user=request.headers.get('oai-authenticated-user-id');
       if(path==='/api/session')return json({signedIn:!!user,userId:user||null,ownerConfigured:!!await getOwner(env),hosted:true,connectionUrl:env.SITE_ORIGIN+'/api/mcp'});
       if(!user) {
@@ -65,7 +66,7 @@ export default {
       }
       if(request.method==='GET') {
         const a=staticAssets[path]||((path==='/'||path==='/characters'||/^\/characters\/[a-z0-9-]+$/.test(path))?staticAssets['/index.html']:null);
-        if(a)return new Response(a.body,{headers:{...headers,'Content-Type':a.type}});
+        if(a)return new Response(staticBody(a),{headers:{...headers,'Content-Type':a.type}});
       }
       fail(404,'Page not found.');
     }catch(error){const status=error.status||(error instanceof SyntaxError?400:500);if(status===500)console.error('Library request failed',error.message);return json({error:status===500?'The library could not complete this request. Please try again.':error.message},status);}

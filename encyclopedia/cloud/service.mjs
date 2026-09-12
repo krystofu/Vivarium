@@ -6,8 +6,18 @@ export function object(value) {if(!value||typeof value!=='object'||Array.isArray
 function allowed(input,keys) {object(input);if(Object.keys(input).some(k=>!keys.includes(k)))fail(400,'Unknown field.');}
 export function profile(input) {allowed(input,profileKeys);return Object.fromEntries(Object.entries(input).map(([k,v])=>[k,string(v)]));}
 export function traits(input) {allowed(input,['immutable','signature','flexible']);return Object.fromEntries(Object.entries(input).map(([k,v])=>[k,string(v)]));}
+export function atmosphere(input) {
+  if(input===null)return null;
+  allowed(input,['mode','strength','motion','variant','palette']);const output={};
+  if(input.mode!==undefined){if(!['auto','locked'].includes(input.mode))fail(400,'Invalid atmosphere mode.');output.mode=input.mode;}
+  if(input.strength!==undefined){if(!['subtle','immersive'].includes(input.strength))fail(400,'Invalid atmosphere strength.');output.strength=input.strength;}
+  if(input.motion!==undefined){if(!['drift','shimmer','pulse','still'].includes(input.motion))fail(400,'Invalid atmosphere motion.');output.motion=input.motion;}
+  if(input.variant!==undefined){if(!Number.isInteger(input.variant)||input.variant<0||input.variant>99)fail(400,'Invalid atmosphere variant.');output.variant=input.variant;}
+  if(input.palette!==undefined){allowed(input.palette,['accent','secondary','background']);const palette={};for(const [key,value] of Object.entries(input.palette)){if(typeof value!=='string'||!/^#[0-9a-f]{6}$/i.test(value))fail(400,'Atmosphere colors must be six-digit hex values.');palette[key]=value.toLowerCase();}output.palette=palette;}
+  return output;
+}
 export function characterInput(input,creating=false) {
-  allowed(input,['id','name','summary','age','tags','profile','identity','canonStatus','foundryStatus','source']);
+  allowed(input,['id','name','summary','age','tags','profile','identity','canonStatus','foundryStatus','source','visualAtmosphere']);
   const output={};
   for(const key of ['id','name','summary','source']) if(input[key]!==undefined)output[key]=string(input[key],key==='summary'?1000:key==='source'?2000:120);
   if(creating&&(!output.id||!output.name))fail(400,'Character ID and name are required.');
@@ -16,6 +26,7 @@ export function characterInput(input,creating=false) {
   if(input.tags!==undefined){if(!Array.isArray(input.tags)||input.tags.length>16)fail(400,'Use up to 16 tags.');output.tags=input.tags.map(v=>string(v,60));}
   if(input.profile!==undefined)output.profile=profile(input.profile);
   if(input.identity!==undefined)output.identity=traits(input.identity);
+  if(input.visualAtmosphere!==undefined)output.visualAtmosphere=atmosphere(input.visualAtmosphere);
   if(input.canonStatus!==undefined){if(!['Building','Canon','Archived'].includes(input.canonStatus))fail(400,'Invalid canon status.');output.canonStatus=input.canonStatus;}
   if(input.foundryStatus!==undefined){if(!['Not run','In progress','Complete'].includes(input.foundryStatus))fail(400,'Invalid Foundry status.');output.foundryStatus=input.foundryStatus;}
   return output;
@@ -27,7 +38,7 @@ export async function createCharacter(store,input,actor) {
     const existing=db.characters.find(c=>c.id===clean.id);
     if(existing)fail(409,'This character ID already exists. Fetch it before updating.');
     const {source,...values}=clean;
-    const c={generation:2,sequence:Math.max(0,...db.characters.map(c=>c.sequence||0))+1,canonStatus:'Building',foundryStatus:'Not run',summary:'',primaryAssetId:null,identityAuthority:{},tags:[],profile:{},identity:{immutable:'',signature:'',flexible:''},provenance:source?[{source,at:new Date().toISOString()}]:[],extensions:{},...values};
+    const c={generation:2,sequence:Math.max(0,...db.characters.map(c=>c.sequence||0))+1,canonStatus:'Building',foundryStatus:'Not run',summary:'',primaryAssetId:null,identityAuthority:{},visualAtmosphere:null,tags:[],profile:{},identity:{immutable:'',signature:'',flexible:''},provenance:source?[{source,at:new Date().toISOString()}]:[],extensions:{},...values};
     db.characters.push(c);event(db,'character-created',c.id,actor);return c;
   });
 }

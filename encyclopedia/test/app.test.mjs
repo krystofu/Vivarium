@@ -4,6 +4,7 @@ import { mkdtemp, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { once } from 'node:events';
+import { createHash } from 'node:crypto';
 import { createApp } from '../server.mjs';
 
 const png = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+aWQAAAABJRU5ErkJggg==','base64');
@@ -18,18 +19,19 @@ async function fixture(t) {
 const patch=data=>({method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});
 test('real routes, seed, and unknown route handling',async t=>{
   const f=await fixture(t);
-  for(const path of ['/characters','/characters/zara-solano','/app.js','/styles.css','/favicon.svg']) assert.equal((await f.request(path)).status,200);
+  for(const path of ['/characters','/characters/zara-solano','/app.js','/styles.css','/favicon.svg','/VIVARIUM_GEM_OFFICIAL_GEN2.png']) assert.equal((await f.request(path)).status,200);
+  const officialGem=Buffer.from(await (await f.request('/VIVARIUM_GEM_OFFICIAL_GEN2.png')).arrayBuffer());assert.equal(createHash('sha256').update(officialGem).digest('hex'),'e3b2839e7e6486e9baacd70189ac7ac63eaab0f8b9c3ba1b0b75ccaa45a17535');
   const db=await (await f.request('/api/library')).json();
   assert.equal(db.characters[0].foundryStatus,'Not run');assert.equal(db.assets.length,0);
   assert.equal((await f.request('/secret.env')).status,404);
 });
 test('manual character slots accept every dossier field',async t=>{
   const f=await fixture(t);
-  const input={id:'manual-inez',name:'Manual Inez',age:28,summary:'A complete hand-entered identity.',tags:['Measured','Restorer'],canonStatus:'Canon',foundryStatus:'In progress',source:'Manual curator entry',identity:{immutable:'Exact face.',signature:'Dry humor.',flexible:'Wardrobe.'},profile:{whySheWorks:'Specific personhood.',faceArchitecture:'Angular oval.',bodySilhouette:'Tall and lean.',attractionChannel:'Competence.',movementLanguage:'Deliberate.',identityNucleus:'Repair what others discard.',contradiction:'Guarded but generous.',voice:'Measured and dry.',occupation:'Restorer.',privateWorld:'Dusty studio.',relationshipPromise:'Earned trust.',backstory:'Established manually.'}};
+  const input={id:'manual-inez',name:'Manual Inez',age:28,summary:'A complete hand-entered identity.',tags:['Measured','Restorer'],canonStatus:'Canon',foundryStatus:'In progress',source:'Manual curator entry',visualAtmosphere:{mode:'locked',strength:'immersive',motion:'drift',variant:2,palette:{accent:'#aabbcc',secondary:'#223344',background:'#101214'}},identity:{immutable:'Exact face.',signature:'Dry humor.',flexible:'Wardrobe.'},profile:{whySheWorks:'Specific personhood.',faceArchitecture:'Angular oval.',bodySilhouette:'Tall and lean.',attractionChannel:'Competence.',movementLanguage:'Deliberate.',identityNucleus:'Repair what others discard.',contradiction:'Guarded but generous.',voice:'Measured and dry.',occupation:'Restorer.',privateWorld:'Dusty studio.',relationshipPromise:'Earned trust.',backstory:'Established manually.'}};
   const response=await f.request('/api/characters',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(input)});
   assert.equal(response.status,201,await response.clone().text());const character=await response.json();
   assert.equal(character.canonStatus,'Canon');assert.equal(character.foundryStatus,'In progress');assert.deepEqual(character.tags,input.tags);
-  assert.deepEqual(character.identity,input.identity);assert.deepEqual(character.profile,input.profile);assert.equal(character.provenance[0].source,input.source);
+  assert.deepEqual(character.identity,input.identity);assert.deepEqual(character.profile,input.profile);assert.deepEqual(character.visualAtmosphere,input.visualAtmosphere);assert.equal(character.provenance[0].source,input.source);
   const appSource=await (await f.request('/app.js')).text();
   assert.match(appSource,/Create character slot/);assert.match(appSource,/Character profile/);assert.match(appSource,/collect\('profile'\)/);assert.match(appSource,/collect\('identity'\)/);
 });
@@ -65,6 +67,7 @@ test('invalid requests cannot write unsupported files, characters, status, or fi
   assert.equal((await f.request('/api/characters/zara-solano',{method:'PATCH',body:'{'})).status,400);
   assert.equal((await f.request('/api/assets/missing',patch({status:'Accepted'}))).status,404);
   assert.equal((await f.request('/api/characters/zara-solano/identity-authority',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({assignments:{face:'missing'}})})).status,400);
+  assert.equal((await f.request('/api/characters/zara-solano',patch({visualAtmosphere:{mode:'locked',palette:{accent:'purple'}}}))).status,400);
 });
 test('cross-origin requests blocked and security headers present',async t=>{
   const f=await fixture(t);
