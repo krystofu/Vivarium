@@ -21,7 +21,13 @@ The production build runs on ChatGPT Sites with a durable SQL library and privat
 The app exposes the same safe character operations in two places:
 
 - **ChatGPT Work / Codex:** page tools are available while the live site is open in the built-in browser.
-- **Ordinary ChatGPT chats:** connect the site's `/api/mcp` URL as a custom app. OAuth grants read/write access to the owner account; every write records its source, and identity images still require explicit review in the website.
+- **Ordinary ChatGPT chats:** connect the site's `/api/mcp` URL as a custom app. OAuth grants read/write access to the owner account; every write records its source.
+
+### Canonical character asset retrieval (P0)
+
+The connector mirrors the established UI workflow: `upload_image` stores actual image bytes in Review, `review_render` handles ordinary curation, and `approve_identity_reference` requires an explicit approval flag before it accepts and locks an identity reference. `fetch_original_image({ characterId })` resolves only that character's locked Accepted primary identity asset and returns its original binary as an MCP image content block with the stored SHA-256. An exact nonprimary upload can instead be retrieved by `assetId`.
+
+This keeps one canonical loop: hand over a character image → upload → approve and lock → retrieve the exact primary original for CONTINUUM. Metadata or a linked render cannot silently stand in for the canonical file. The website remains the visual review surface; the connector now exposes the same underlying actions.
 
 Builds are bundled with `npm run build`. Database migrations live in `drizzle/`; `.openai/hosting.json` binds the SQL database as `DB` and image storage as `BUCKET`. `SITE_ORIGIN` must equal the public site origin.
 

@@ -4,7 +4,7 @@ import { readFile } from 'node:fs/promises';
 import { Miniflare } from 'miniflare';
 
 async function fixture(t) {
-  const origin='https://vivarium-gen2-encyclopedia.honest-venus-5101.chatgpt.site';
+  const origin='https://vivarium-connector-test.invalid';
   const mf=new Miniflare({modules:true,scriptPath:'dist/server/index.js',compatibilityDate:'2026-05-03',d1Databases:['DB'],r2Buckets:['BUCKET'],bindings:{SITE_ORIGIN:origin}});
   const db=await mf.getD1Database('DB');
   for(const file of ['drizzle/0000_lazy_colleen_wing.sql','drizzle/0001_great_marvel_apes.sql']) {
@@ -42,6 +42,13 @@ test('OAuth discovery, registration, owner consent and PKCE token exchange work'
   assert.equal((await f.anonymous('/api/mcp')).status,401);
   response=await f.anonymous('/api/mcp',{method:'POST',headers:{Authorization:`Bearer ${token.access_token}`,'Content-Type':'application/json',Accept:'application/json, text/event-stream'},body:JSON.stringify({jsonrpc:'2.0',id:1,method:'initialize',params:{protocolVersion:'2025-06-18',capabilities:{},clientInfo:{name:'test',version:'1'}}})});
   assert.equal(response.status,200);assert.equal((await response.json()).result.serverInfo.name,'Vivarium Character Encyclopedia');
+  const call=async(id,name,args)=>f.anonymous('/api/mcp',{method:'POST',headers:{Authorization:`Bearer ${token.access_token}`,'Content-Type':'application/json',Accept:'application/json, text/event-stream'},body:JSON.stringify({jsonrpc:'2.0',id,method:'tools/call',params:{name,arguments:args}})});
+  const png=Buffer.from([137,80,78,71,13,10,26,10,1,2,3,4]);
+  response=await call(2,'upload_image',{characterId:'zara-solano',title:'Connector exact-byte test',imageBase64:png.toString('base64')});
+  let result=(await response.json()).result;assert.equal(result.isError,undefined);const assetId=result.structuredContent.asset.id;assert.equal(result.structuredContent.asset.status,'Review');
+  response=await call(3,'fetch_original_image',{characterId:'zara-solano'});result=(await response.json()).result;assert.equal(result.isError,true);assert.match(result.content[0].text,/locked Accepted primary/);
+  response=await call(4,'approve_identity_reference',{assetId,confirmIdentityApproval:true});result=(await response.json()).result;assert.equal(result.structuredContent.asset.locked,true);
+  response=await call(5,'fetch_original_image',{characterId:'zara-solano'});result=(await response.json()).result;assert.equal(result.content[1].type,'image');assert.deepEqual(Buffer.from(result.content[1].data,'base64'),png);assert.equal(result.structuredContent.canonicalPrimary,true);
 });
 test('linked renders stay in Review and cross-origin writes are rejected',async t=>{
   const f=await fixture(t);await f.request('/api/library');

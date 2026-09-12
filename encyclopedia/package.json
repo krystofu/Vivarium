@@ -9,8 +9,8 @@
   "scripts": {
     "start": "node server.mjs",
     "dev": "node --watch server.mjs",
-    "test": "node --test test/*.test.mjs",
-    "check": "node --check server.mjs && node --check public/app.js",
+    "test": "node --test test/app.test.mjs test/cloud.test.mjs",
+    "check": "node --check server.mjs && node --check cloud/mcp.mjs && node --check cloud/assets.mjs && node --check public/app.js && node --check public/site-tools.js",
     "build": "node build.mjs",
     "db:generate": "drizzle-kit generate"
   },
