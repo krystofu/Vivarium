@@ -2,6 +2,13 @@ import { fail, string, event } from './service.mjs';
 
 export const MAX_IMAGE_BYTES=12*1024*1024;
 
+export function trustedChatFileUrl(value) {
+  let url;try{url=new URL(value);}catch{return null;}
+  const host=url.hostname.toLowerCase();
+  const trusted=host==='files.oaiusercontent.com'||host.endsWith('.oaiusercontent.com')||/^oaisdmntpr[a-z0-9-]*\.blob\.core\.windows\.net$/.test(host);
+  return url.protocol==='https:'&&!url.username&&!url.password&&trusted?url:null;
+}
+
 export function imageType(bytes) {
   if([137,80,78,71,13,10,26,10].every((v,i)=>bytes[i]===v))return ['png','image/png'];
   if(bytes[0]===255&&bytes[1]===216&&bytes[2]===255)return ['jpg','image/jpeg'];

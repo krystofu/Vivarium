@@ -2,7 +2,7 @@ import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { WebStandardStreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/webStandardStreamableHttp.js';
 import { z } from 'zod';
 import { createCharacter, updateCharacter, reviewAsset, logRender, profileKeys } from './service.mjs';
-import { decodeBase64, boundedStream, uploadAsset, originalAsset, primaryIdentity } from './assets.mjs';
+import { decodeBase64, boundedStream, trustedChatFileUrl, uploadAsset, originalAsset, primaryIdentity } from './assets.mjs';
 
 const base64=bytes=>{let value='';const chunk=32768;for(let i=0;i<bytes.length;i+=chunk)value+=String.fromCharCode(...bytes.subarray(i,i+chunk));return btoa(value);};
 const publicAsset=a=>({id:a.id,characterId:a.characterId,title:a.title,mime:a.mime,sha256:a.sha256,byteLength:a.byteLength,kind:a.kind,status:a.status,locked:a.locked,createdAt:a.createdAt});
@@ -32,7 +32,7 @@ export async function handleMcp(request,env,store,auth) {
   const uploadInput=z.object({characterId:z.string().max(100),title:z.string().min(1).max(180),file:z.object({download_url:z.string().url(),file_id:z.string().optional()}).strict().optional(),imageBase64:z.string().optional()}).strict().refine(v=>!!v.file!==!!v.imageBase64,{message:'Provide exactly one ChatGPT file or base64 image.'});
   tool('upload_image','Upload an original image','Upload the actual PNG, JPEG, or WebP bytes to a character Gallery. The image always enters Review and cannot become canonical until approve_identity_reference is called with explicit approval.',uploadInput,true,async input=>{
     let bytes;
-    if(input.file){const url=new URL(input.file.download_url);if(url.protocol!=='https:'||url.username||url.password)throw Object.assign(new Error('The attached file must use a secure download URL.'),{status:400});const response=await fetch(url,{redirect:'error'});if(!response.ok)throw Object.assign(new Error('ChatGPT could not provide the attached image.'),{status:400});bytes=await boundedStream(response.body,response.headers.get('content-length'));}
+    if(input.file){const url=trustedChatFileUrl(input.file.download_url);if(!url)throw Object.assign(new Error('The attached file must come from ChatGPT’s protected file service.'),{status:400});const response=await fetch(url,{redirect:'error'});if(!response.ok)throw Object.assign(new Error('ChatGPT could not provide the attached image.'),{status:400});bytes=await boundedStream(response.body,response.headers.get('content-length'));}
     else bytes=decodeBase64(input.imageBase64);
     return {asset:publicAsset(await uploadAsset(env,store,{characterId:input.characterId,title:input.title,bytes},`mcp:${auth.clientId}`)),nextStep:'Review the image, then call approve_identity_reference only with the user’s explicit approval.'};
   },{'openai/fileParams':['file']});

@@ -2,6 +2,14 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import { Miniflare } from 'miniflare';
+import { trustedChatFileUrl } from '../cloud/assets.mjs';
+
+test('connector uploads accept only protected ChatGPT file URLs',()=>{
+  assert.equal(trustedChatFileUrl('https://files.oaiusercontent.com/file/test').hostname,'files.oaiusercontent.com');
+  assert.equal(trustedChatFileUrl('https://sdmntprcentralus.oaiusercontent.com/files/test').hostname,'sdmntprcentralus.oaiusercontent.com');
+  assert.equal(trustedChatFileUrl('https://example.com/image.png'),null);
+  assert.equal(trustedChatFileUrl('http://files.oaiusercontent.com/image.png'),null);
+});
 
 async function fixture(t) {
   const origin='https://vivarium-connector-test.invalid';
