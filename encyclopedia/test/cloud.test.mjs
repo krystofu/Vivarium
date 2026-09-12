@@ -59,10 +59,13 @@ test('OAuth discovery, registration, owner consent and PKCE token exchange work'
   response=await call(5,'fetch_original_image',{characterId:'zara-solano'});result=(await response.json()).result;assert.equal(result.content[1].type,'image');assert.deepEqual(Buffer.from(result.content[1].data,'base64'),png);assert.equal(result.structuredContent.canonicalPrimary,true);
 
   response=await call(6,'upload_image',{characterId:'zara-solano',title:'Mounted-file fallback test',file:'/mnt/data/reference.png'});result=(await response.json()).result;
-  assert.ok(result.structuredContent,JSON.stringify(result));assert.equal(result.structuredContent.uploadRequired,true);assert.match(result.structuredContent.uploadUrl,/\/api\/connector-uploads\/[a-f0-9]{64}$/);
-  response=await f.anonymous(result.structuredContent.uploadUrl.slice(f.origin.length),{method:'POST',headers:{'Content-Type':'application/octet-stream'},body:Buffer.from([137,80,78,71,13,10,26,10,9,8,7,6])});
-  assert.equal(response.status,201,await response.clone().text());const mounted=await response.json();assert.equal(mounted.asset.status,'Review');assert.equal(mounted.asset.title,'Mounted-file fallback test');
-  response=await f.anonymous(result.structuredContent.uploadUrl.slice(f.origin.length),{method:'POST',body:png});assert.equal(response.status,410);
+  assert.ok(result.structuredContent,JSON.stringify(result));assert.equal(result.structuredContent.transport,'mcp-chunks');const uploadId=result.structuredContent.uploadId;
+  const mountedPng=Buffer.from([137,80,78,71,13,10,26,10,9,8,7,6]),encoded=mountedPng.toString('base64'),mountedHash=(await import('node:crypto')).createHash('sha256').update(mountedPng).digest('hex');
+  response=await call(7,'append_image_chunk',{uploadId,index:0,imageBase64Chunk:encoded.slice(0,8)});result=(await response.json()).result;assert.equal(result.structuredContent.nextIndex,1);
+  response=await call(8,'append_image_chunk',{uploadId,index:1,imageBase64Chunk:encoded.slice(8)});result=(await response.json()).result;assert.equal(result.structuredContent.nextIndex,2);
+  response=await call(9,'finish_image_upload',{uploadId,expectedByteLength:mountedPng.length,expectedSha256:mountedHash});result=(await response.json()).result;
+  assert.equal(result.structuredContent.asset.status,'Review');assert.equal(result.structuredContent.asset.title,'Mounted-file fallback test');assert.equal(result.structuredContent.verifiedOriginal,true);
+  response=await call(10,'finish_image_upload',{uploadId,expectedByteLength:mountedPng.length,expectedSha256:mountedHash});result=(await response.json()).result;assert.equal(result.isError,true);assert.match(result.content[0].text,/expired/);
 });
 test('linked renders stay in Review and cross-origin writes are rejected',async t=>{
   const f=await fixture(t);await f.request('/api/library');

@@ -3,7 +3,7 @@ import { WebStandardStreamableHTTPServerTransport } from '@modelcontextprotocol/
 import { z } from 'zod';
 import { createCharacter, updateCharacter, reviewAsset, logRender, profileKeys } from './service.mjs';
 import { decodeBase64, downloadTrustedChatFile, uploadAsset, originalAsset, primaryIdentity } from './assets.mjs';
-import { createAssetUploadGrant } from './oauth.mjs';
+import { createChunkUpload, appendChunkUpload, finishChunkUpload, MAX_CHUNK_CHARS } from './oauth.mjs';
 
 const base64=bytes=>{let value='';const chunk=32768;for(let i=0;i<bytes.length;i+=chunk)value+=String.fromCharCode(...bytes.subarray(i,i+chunk));return btoa(value);};
 const publicAsset=a=>({id:a.id,characterId:a.characterId,title:a.title,mime:a.mime,sha256:a.sha256,byteLength:a.byteLength,kind:a.kind,status:a.status,locked:a.locked,createdAt:a.createdAt});
@@ -31,19 +31,26 @@ export async function handleMcp(request,env,store,auth) {
   tool('update_character','Update character','Update an existing canonical Vivarium character. Fetch first, preserve unspecified fields, and cite the source. Does not replace identity images.',{id:z.string().max(100),changes:z.object(shape).strict()},true,async({id,changes})=>({character:await updateCharacter(store,id,changes,`mcp:${auth.clientId}`)}));
   tool('log_render','Log render source','Log an HTTPS render source in Review without downloading it. Use upload_image when ChatGPT has the actual image and the original bytes must live in the Encyclopedia.',{id:z.string().max(100),characterId:z.string().max(100),title:z.string().max(180),sourceUrl:z.string().url().max(2000),notes:z.string().max(4000).optional()},true,async input=>({asset:await logRender(store,input,`mcp:${auth.clientId}`)}));
   const uploadInput=z.object({characterId:z.string().max(100),title:z.string().min(1).max(180),file:z.any().optional(),imageBase64:z.string().optional()}).strict().refine(v=>!!v.file!==!!v.imageBase64,{message:'Provide exactly one ChatGPT file or base64 image.'});
-  tool('upload_image','Upload an original image','Upload the actual PNG, JPEG, or WebP bytes to a character Gallery. Pass an attached or mounted file in file. If the result contains uploadRequired, immediately POST that local file as raw bytes to uploadUrl; this is the ChatGPT mounted-file fallback. The image always enters Review and cannot become canonical until approve_identity_reference is called with explicit approval.',uploadInput,true,async input=>{
+  tool('upload_image','Upload an original image','Upload the actual PNG, JPEG, or WebP bytes to a character Gallery. Pass an attached or mounted file in file. For a mounted path, follow the returned connector-native chunk instructions; no external network request is needed. The image always enters Review and cannot become canonical until approve_identity_reference is called with explicit approval.',uploadInput,true,async input=>{
     let bytes;
     if(typeof input.file==='string') {
       if(/^https:\/\//i.test(input.file))bytes=await downloadTrustedChatFile(input.file);
       else {
-        const token=await createAssetUploadGrant(env,{owner:auth.owner,clientId:auth.clientId,characterId:input.characterId,title:input.title});
-        return {uploadRequired:true,uploadUrl:`${env.SITE_ORIGIN}/api/connector-uploads/${token}`,method:'POST',contentType:'application/octet-stream',expiresInSeconds:300,localFile:input.file,instructions:'POST the exact raw bytes of localFile to uploadUrl now. Do not base64-encode them. A successful response returns the created Review asset.'};
+        const uploadId=await createChunkUpload(env,{owner:auth.owner,clientId:auth.clientId,characterId:input.characterId,title:input.title});
+        return {uploadRequired:true,transport:'mcp-chunks',uploadId,maxChunkBase64Chars:MAX_CHUNK_CHARS,expiresInSeconds:900,localFile:input.file,instructions:`Base64-encode localFile without a data-URL prefix. Call append_image_chunk sequentially from index 0 with chunks no longer than ${MAX_CHUNK_CHARS} characters, then call finish_image_upload with the original byte length and SHA-256. Do not use curl or another network request.`};
       }
     } else if(input.file&&typeof input.file.download_url==='string')bytes=await downloadTrustedChatFile(input.file.download_url);
     else if(input.file)throw Object.assign(new Error('Pass the attached file path, or a ChatGPT file object with download_url.'),{status:400});
     else bytes=decodeBase64(input.imageBase64);
     return {asset:publicAsset(await uploadAsset(env,store,{characterId:input.characterId,title:input.title,bytes},`mcp:${auth.clientId}`)),nextStep:'Review the image, then call approve_identity_reference only with the user’s explicit approval.'};
   },{'openai/fileParams':['file']});
+  tool('append_image_chunk','Append original image bytes','Continue a mounted-file upload created by upload_image. Send base64 chunks in exact sequential order; each chunk may contain at most 80000 characters.',{uploadId:z.string().regex(/^[a-f0-9]{64}$/),index:z.number().int().min(0),imageBase64Chunk:z.string().min(1).max(MAX_CHUNK_CHARS)},true,async({uploadId,index,imageBase64Chunk})=>appendChunkUpload(env,auth,uploadId,index,imageBase64Chunk));
+  tool('finish_image_upload','Finish original image upload','Finish a connector-native chunk upload, verify the exact original byte length and SHA-256, and store it in Review.',{uploadId:z.string().regex(/^[a-f0-9]{64}$/),expectedByteLength:z.number().int().min(1).max(12*1024*1024),expectedSha256:z.string().regex(/^[a-f0-9]{64}$/)},true,async({uploadId,expectedByteLength,expectedSha256})=>{
+    const pending=await finishChunkUpload(env,auth,uploadId),bytes=decodeBase64(pending.data);
+    const sha256=Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',bytes)),x=>x.toString(16).padStart(2,'0')).join('');
+    if(bytes.byteLength!==expectedByteLength||sha256!==expectedSha256)throw Object.assign(new Error('Uploaded chunks do not match the original file. Start upload_image again.'),{status:409});
+    return {asset:publicAsset(await uploadAsset(env,store,{characterId:pending.characterId,title:pending.title,bytes},`mcp:${auth.clientId}`)),verifiedOriginal:true,nextStep:'The original is stored in Review. Promote it only after explicit user approval.'};
+  });
   tool('review_render','Review a render','Set a noncanonical render to Review, Accepted, or Rejected. This never promotes or locks identity.',{assetId:z.string().max(100),status:z.enum(['Review','Accepted','Rejected']),notes:z.string().max(4000).optional()},true,async({assetId,status,notes})=>({asset:publicAsset(await reviewAsset(store,assetId,{status,notes},`mcp:${auth.clientId}`))}));
   tool('approve_identity_reference','Approve and lock an identity reference','Promote one uploaded image into an Accepted locked identity reference. Call only after the user explicitly approves that exact asset. This is the connector equivalent of the UI approval checkbox and lock action.',{assetId:z.string().max(100),confirmIdentityApproval:z.literal(true),notes:z.string().max(4000).optional()},true,async({assetId,notes})=>({asset:publicAsset(await reviewAsset(store,assetId,{status:'Accepted',promoteIdentity:true,confirmIdentity:true,notes},`mcp:${auth.clientId}`))}));
   tool('fetch_original_image','Fetch exact canonical image bytes','Return an actual original image binary through MCP, not metadata. With characterId, this resolves only the locked Accepted primary identity image for CONTINUUM. With assetId, it retrieves that exact uploaded original.',z.object({characterId:z.string().max(100).optional(),assetId:z.string().max(100).optional()}).strict().refine(v=>!!v.characterId!==!!v.assetId,{message:'Provide exactly one characterId or assetId.'}),false,async input=>{

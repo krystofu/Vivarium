@@ -23,15 +23,32 @@ export async function claimOwner(env,user) {
 async function saveGrant(env,kind,payload,expires) {
   const token=randomToken();await env.DB.prepare('INSERT INTO oauth_grants (hash, kind, payload, expires) VALUES (?, ?, ?, ?)').bind(await hash(token),kind,JSON.stringify(payload),expires).run();return token;
 }
-export async function createAssetUploadGrant(env,payload) {return saveGrant(env,'asset-upload',payload,now()+300);}
-export async function consumeAssetUploadGrant(env,token) {
-  if(!/^[a-f0-9]{64}$/.test(token||''))fail(404,'Upload link not found.');
-  const digest=await hash(token);
-  const row=await env.DB.prepare('DELETE FROM oauth_grants WHERE hash = ? AND kind = ? AND expires > ? RETURNING payload').bind(digest,'asset-upload',now()).first();
-  if(!row)fail(410,'This upload link has expired or was already used. Ask the connector for a new one.');
+const MAX_CHUNK_CHARS=80000,MAX_UPLOAD_CHARS=12*1024*1024*4/3+16;
+export { MAX_CHUNK_CHARS };
+export async function createChunkUpload(env,payload) {
+  return saveGrant(env,'asset-chunks',{...payload,nextIndex:0,data:''},now()+900);
+}
+async function chunkUpload(env,auth,token) {
+  if(!/^[a-f0-9]{64}$/.test(token||''))fail(404,'Chunked upload not found.');
+  const digest=await hash(token),row=await env.DB.prepare('SELECT payload FROM oauth_grants WHERE hash = ? AND kind = ? AND expires > ?').bind(digest,'asset-chunks',now()).first();
+  if(!row)fail(410,'This chunked upload expired. Start upload_image again.');
   const data=JSON.parse(row.payload);
-  if(data.owner!==await getOwner(env))fail(403,'This upload link does not belong to the library owner.');
-  return data;
+  if(data.owner!==auth.owner||data.clientId!==auth.clientId)fail(403,'This chunked upload belongs to another connector session.');
+  return {digest,data};
+}
+export async function appendChunkUpload(env,auth,token,index,chunk) {
+  if(!Number.isInteger(index)||index<0)fail(400,'Chunk index must be a nonnegative integer.');
+  if(typeof chunk!=='string'||!chunk.length||chunk.length>MAX_CHUNK_CHARS||!/^[A-Za-z0-9+/]*={0,2}$/.test(chunk))fail(400,`Each chunk must be 1-${MAX_CHUNK_CHARS} base64 characters.`);
+  const {digest,data}=await chunkUpload(env,auth,token);if(index!==data.nextIndex)fail(409,`Expected chunk index ${data.nextIndex}.`);
+  if(data.data.length+chunk.length>MAX_UPLOAD_CHARS)fail(413,'File is too large.');
+  data.data+=chunk;data.nextIndex++;
+  await env.DB.prepare('UPDATE oauth_grants SET payload = ? WHERE hash = ? AND kind = ?').bind(JSON.stringify(data),digest,'asset-chunks').run();
+  return {uploadId:token,nextIndex:data.nextIndex,receivedBase64Chars:data.data.length};
+}
+export async function finishChunkUpload(env,auth,token) {
+  const {digest,data}=await chunkUpload(env,auth,token);
+  const removed=await env.DB.prepare('DELETE FROM oauth_grants WHERE hash = ? AND kind = ? RETURNING hash').bind(digest,'asset-chunks').first();
+  if(!removed)fail(409,'This chunked upload was already finished.');return data;
 }
 async function issue(env,payload) {
   const access=await saveGrant(env,'access',payload,now()+3600);

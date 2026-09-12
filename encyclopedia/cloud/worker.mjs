@@ -2,7 +2,7 @@ import seed from '../seed.json';
 import staticAssets from '../.generated-assets.mjs';
 import { cloudStore } from './store.mjs';
 import { fail, string, createCharacter, updateCharacter, reviewAsset, logRender } from './service.mjs';
-import { oauth, authenticatedToken, getOwner, claimOwner, consumeAssetUploadGrant } from './oauth.mjs';
+import { oauth, authenticatedToken, getOwner, claimOwner } from './oauth.mjs';
 import { handleMcp } from './mcp.mjs';
 import { boundedStream, uploadAsset, originalAsset } from './assets.mjs';
 
@@ -23,13 +23,6 @@ export default {
         return await oauth(request,env);
       }
       const store=cloudStore(env,seed);
-      const connectorUpload=path.match(/^\/api\/connector-uploads\/([a-f0-9]{64})$/);
-      if(connectorUpload&&request.method==='POST') {
-        const grant=await consumeAssetUploadGrant(env,connectorUpload[1]);
-        const bytes=await bounded(request,12*1024*1024);
-        const asset=await uploadAsset(env,store,{characterId:grant.characterId,title:grant.title,bytes},`mcp:${grant.clientId}`);
-        return json({asset,status:'uploaded',nextStep:'The original is stored in Review. Promote it only after explicit user approval.'},201);
-      }
       if(path==='/api/mcp') {
         const auth=await authenticatedToken(request,env);
         if(!auth)return new Response(JSON.stringify({error:'unauthorized'}),{status:401,headers:{...headers,'Content-Type':'application/json','WWW-Authenticate':`Bearer resource_metadata="${env.SITE_ORIGIN}/.well-known/oauth-protected-resource", scope="characters:read characters:write"`}});
