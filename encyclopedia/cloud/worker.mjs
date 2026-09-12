@@ -1,7 +1,7 @@
 import seed from '../seed.json';
 import staticAssets from '../.generated-assets.mjs';
 import { cloudStore } from './store.mjs';
-import { fail, string, createCharacter, updateCharacter, reviewAsset, logRender } from './service.mjs';
+import { fail, string, createCharacter, updateCharacter, reviewAsset, logRender, setIdentityAuthorities, buildContinuumPack } from './service.mjs';
 import { oauth, authenticatedToken, getOwner, claimOwner } from './oauth.mjs';
 import { handleMcp } from './mcp.mjs';
 import { boundedStream, uploadAsset, originalAsset } from './assets.mjs';
@@ -46,6 +46,10 @@ export default {
       if(path==='/api/characters'&&request.method==='POST')return json(await createCharacter(store,await readJson(request),actor),201);
       const characterRoute=path.match(/^\/api\/characters\/([a-z0-9-]+)$/);
       if(characterRoute&&request.method==='PATCH')return json(await updateCharacter(store,characterRoute[1],await readJson(request),actor));
+      const authorityRoute=path.match(/^\/api\/characters\/([a-z0-9-]+)\/identity-authority$/);
+      if(authorityRoute&&request.method==='PUT')return json(await setIdentityAuthorities(store,authorityRoute[1],(await readJson(request)).assignments,actor));
+      const continuumRoute=path.match(/^\/api\/characters\/([a-z0-9-]+)\/continuum-pack$/);
+      if(continuumRoute&&request.method==='GET')return json(await buildContinuumPack(store,continuumRoute[1]));
       if(path==='/api/render-links'&&request.method==='POST')return json(await logRender(store,await readJson(request),actor),201);
       if(path==='/api/assets'&&request.method==='POST') {
         const bytes=await bounded(request,12*1024*1024);

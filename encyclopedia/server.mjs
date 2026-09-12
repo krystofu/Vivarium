@@ -3,7 +3,7 @@ import { readFile, writeFile, mkdir, rename, stat } from 'node:fs/promises';
 import { resolve, dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { randomUUID, createHash } from 'node:crypto';
-import { createCharacter, updateCharacter, logRender } from './cloud/service.mjs';
+import { createCharacter, updateCharacter, reviewAsset, logRender, setIdentityAuthorities, buildContinuumPack } from './cloud/service.mjs';
 
 const ROOT = dirname(fileURLToPath(import.meta.url));
 const MAX_IMAGE = 12 * 1024 * 1024;
@@ -86,23 +86,12 @@ export async function createApp({ dataDir = process.env.VIVARIUM_DATA_DIR || joi
       const assetRoute = path.match(/^\/api\/assets\/([a-zA-Z0-9-]+)$/);
       if (req.method === 'PATCH' && assetRoute) {
         const input = JSON.parse((await body(req, 16000)).toString());
-        const result = await mutate(db => {
-          const asset = db.assets.find(a => a.id === assetRoute[1]);
-          if (!asset) fail(404, 'Image not found.');
-          if (asset.locked) fail(409, 'Canonical identity references are locked. Add a new reference instead.');
-          if (!['Review', 'Accepted', 'Rejected'].includes(input.status)) fail(400, 'Invalid review status.');
-          asset.status = input.status;
-          if (input.promoteIdentity === true) {
-            if (input.confirmIdentity !== true || input.status !== 'Accepted') fail(400, 'Confirm the accepted identity reference.');
-            asset.kind = 'identity'; asset.locked = true;
-            const character = db.characters.find(c => c.id === asset.characterId);
-            if (!character.primaryAssetId) character.primaryAssetId = asset.id;
-            event(db, 'identity-locked', asset.characterId, asset.id);
-          } else event(db, `render-${input.status.toLowerCase()}`, asset.characterId, asset.id);
-          return asset;
-        });
-        return send(200, result);
+        return send(200, await reviewAsset({read,mutate},assetRoute[1],input,'local-owner'));
       }
+      const authorityRoute = path.match(/^\/api\/characters\/([a-z0-9-]+)\/identity-authority$/);
+      if (req.method === 'PUT' && authorityRoute) return send(200, await setIdentityAuthorities({read,mutate},authorityRoute[1],JSON.parse((await body(req,16000)).toString()).assignments,'local-owner'));
+      const continuumRoute = path.match(/^\/api\/characters\/([a-z0-9-]+)\/continuum-pack$/);
+      if (req.method === 'GET' && continuumRoute) return send(200, await buildContinuumPack({read,mutate},continuumRoute[1]));
       const profileRoute = path.match(/^\/api\/characters\/([a-z0-9-]+)$/);
       if (req.method === 'PATCH' && profileRoute) {
         const input = JSON.parse((await body(req, 64000)).toString());

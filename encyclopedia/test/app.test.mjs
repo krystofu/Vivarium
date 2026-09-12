@@ -41,8 +41,10 @@ test('accepted renders do not become identity; explicit identity lock is immutab
   assert.equal((await f.request(`/api/assets/${a.id}`,patch({status:'Accepted',promoteIdentity:true}))).status,400);
   assert.equal((await f.request(`/api/assets/${a.id}`,patch({status:'Accepted',promoteIdentity:true,confirmIdentity:true}))).status,200);
   assert.equal((await f.request(`/api/assets/${a.id}`,patch({status:'Rejected'}))).status,409);
+  let response=await f.request('/api/characters/zara-solano/identity-authority',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({assignments:{face:a.id,body:a.id}})});assert.equal(response.status,200,await response.clone().text());
+  const pack=await (await f.request('/api/characters/zara-solano/continuum-pack')).json();assert.equal(pack.identityAuthority.roles.face.assetId,a.id);assert.deepEqual(pack.references[0].authorityRoles,['primary-identity','face','body']);assert.equal(pack.generationReferenceAssetIds[0],a.id);
   await f.restart();db=await (await f.request('/api/library')).json();
-  assert.equal(db.characters[0].primaryAssetId,a.id);assert.equal(db.assets[0].locked,true);assert.equal(db.assets[0].status,'Accepted');
+  assert.equal(db.characters[0].primaryAssetId,a.id);assert.equal(db.characters[0].identityAuthority.face,a.id);assert.equal(db.assets[0].locked,true);assert.equal(db.assets[0].status,'Accepted');
 });
 test('invalid requests cannot write unsupported files, characters, status, or fields',async t=>{
   const f=await fixture(t);
@@ -52,6 +54,7 @@ test('invalid requests cannot write unsupported files, characters, status, or fi
   assert.equal((await f.request('/api/characters/zara-solano',patch({profile:{madeUp:'wrong'}}))).status,400);
   assert.equal((await f.request('/api/characters/zara-solano',{method:'PATCH',body:'{'})).status,400);
   assert.equal((await f.request('/api/assets/missing',patch({status:'Accepted'}))).status,404);
+  assert.equal((await f.request('/api/characters/zara-solano/identity-authority',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({assignments:{face:'missing'}})})).status,400);
 });
 test('cross-origin requests blocked and security headers present',async t=>{
   const f=await fixture(t);
