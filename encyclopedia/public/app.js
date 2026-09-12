@@ -6,6 +6,7 @@ let library, query = '', filter = 'All characters', tab = 'profile', galleryFilt
 const esc = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const gem = '<img class="gem" src="/favicon.svg" alt="">';
 const fields = { whySheWorks:'Why she works', faceArchitecture:'Face architecture', bodySilhouette:'Body silhouette', attractionChannel:'Attraction channel', movementLanguage:'Movement language', identityNucleus:'Identity nucleus', contradiction:'Contradiction engine', voice:'Voice', occupation:'Occupation & skills', privateWorld:'Private world', relationshipPromise:'Relationship promise', backstory:'Backstory' };
+const identityFields = {immutable:'Immutable traits',signature:'Signature traits',flexible:'Flexible traits'};
 const authorityRoles = {'primary-identity':['💎','Overall identity'],'face':['◉','Face'],'body':['◇','Body silhouette'],'hair':['⌁','Hair'],'tattoos':['✦','Tattoos'],'style':['◆','Styling / heat'],'expression':['◌','Expression'],'wardrobe':['▱','Wardrobe'],'other':['·','Other']};
 const assetFor = c => library.assets.find(a => a.id === c.primaryAssetId);
 const assetsFor = c => library.assets.filter(a => a.characterId === c.id);
@@ -136,6 +137,7 @@ async function saveAuthority(c,a,previous) {
 }
 async function showContinuumPack(c) {
   try {
+    editor.classList.remove('wide');
     const pack=await api(`/api/characters/${c.id}/continuum-pack`),roles=Object.entries(pack.identityAuthority.roles).filter(([,value])=>value);
     editor.innerHTML=`<div class="continuum-dialog"><div class="section-heading"><div><span class="eyebrow">GENERATION HANDOFF</span><h2>${esc(c.name)} · CONTINUUM Pack</h2></div><button type="button" id="close-editor" aria-label="Close CONTINUUM pack">✕</button></div><p>Everything needed to preserve this identity across a new moment.</p><div class="pack-stats"><span><b>${pack.references.length}</b> locked references</span><span><b>${roles.length}</b> authority roles</span><span><b>${pack.generationReferenceAssetIds.length}</b> generation images</span></div><section class="pack-map">${Object.entries(authorityRoles).map(([role,[icon,label]])=>{const ref=pack.identityAuthority.roles[role];return `<div><span>${icon}</span><small>${esc(label)}</small><strong>${ref?esc(ref.title):'Unset'}</strong>${ref?`<code>${esc(ref.sha256.slice(0,12))}…</code>`:''}</div>`;}).join('')}</section><label class="pack-context">Generation-ready prompt context<textarea readonly rows="12">${esc(pack.promptContext)}</textarea></label><div class="editor-actions"><span id="edit-error" role="alert"></span><button class="quiet" id="download-pack">Download JSON</button><button id="copy-pack">Copy CONTINUUM Pack</button></div></div>`;
     document.querySelector('#close-editor').onclick=()=>editor.close();
@@ -145,6 +147,7 @@ async function showContinuumPack(c) {
   } catch(error){notify(error.message);}
 }
 function editProfile(c) {
+  editor.classList.remove('wide');
   editor.innerHTML=`<form><div class="section-heading"><h2>Edit ${esc(c.name)}</h2><button type="button" id="close-editor" aria-label="Close profile editor">✕</button></div><p>Write established character details. Empty fields remain undeveloped.</p>${Object.entries(fields).map(([key,label])=>`<label class="edit-field">${label}<textarea name="${key}" maxlength="4000" rows="3">${esc(c.profile[key]||'')}</textarea></label>`).join('')}<div class="editor-actions"><span id="edit-error" role="alert"></span><button type="submit">Save profile</button></div></form>`;
   document.querySelector('#close-editor').onclick=()=>editor.close();
   editor.querySelector('form').onsubmit=async e=>{
@@ -159,9 +162,23 @@ window.addEventListener('keydown',e=>{
   if(e.key==='/' && !lightbox.open && !editor.open && !['INPUT','TEXTAREA'].includes(document.activeElement.tagName)) { const search=document.querySelector('#search'); if(search){e.preventDefault();search.focus();} }
 });
 function createCharacterForm() {
-  editor.innerHTML=`<form><div class="section-heading"><h2>A new identity</h2><button type="button" id="close-editor" aria-label="Close character form">✕</button></div><p>Start with what is established. There is room to develop the rest.</p><label class="edit-field">Name<input name="name" required maxlength="120"></label><label class="edit-field">Character ID<input name="id" required pattern="[a-z][a-z0-9-]{1,79}" placeholder="e.g. inez-vale"></label><label class="edit-field">Adult age<input name="age" type="number" min="21" max="2000" required></label><label class="edit-field">Identity summary<textarea name="summary" maxlength="1000" rows="3"></textarea></label><div class="editor-actions"><span id="edit-error" role="alert"></span><button type="submit">Add character</button></div></form>`;
+  editor.classList.add('wide');
+  const textareas=(group,definitions)=>Object.entries(definitions).map(([key,label])=>`<label class="edit-field">${label}<textarea name="${group}.${key}" maxlength="4000" rows="3"></textarea></label>`).join('');
+  editor.innerHTML=`<form class="character-create-form"><div class="section-heading"><div><span class="eyebrow">MANUAL CHARACTER SLOT</span><h2>A new identity</h2></div><button type="button" id="close-editor" aria-label="Close character form">✕</button></div><p>Create the complete dossier now, or leave unfinished fields open for later development.</p><fieldset class="form-section"><legend>Core record</legend><div class="create-grid"><label class="edit-field">Name<input name="name" required maxlength="120" autocomplete="off" placeholder="e.g. Inez Vale"></label><label class="edit-field">Character ID<input name="id" required pattern="[a-z][a-z0-9-]{1,79}" autocomplete="off" placeholder="e.g. inez-vale"><small>Permanent lowercase ID used by ChatGPT and links.</small></label><label class="edit-field">Adult age<input name="age" type="number" min="21" max="2000" required></label><label class="edit-field">Tags<input name="tags" maxlength="975" placeholder="Quiet confidence, Restorer, Slow burn"><small>Separate up to 16 tags with commas.</small></label><label class="edit-field">Canon status<select name="canonStatus"><option>Building</option><option>Canon</option><option>Archived</option></select></label><label class="edit-field">Foundry status<select name="foundryStatus"><option>Not run</option><option>In progress</option><option>Complete</option></select></label></div><label class="edit-field">Identity summary<textarea name="summary" maxlength="1000" rows="3"></textarea></label><label class="edit-field">Source / provenance note<input name="source" maxlength="2000" placeholder="Where this established canon came from"></label></fieldset><fieldset class="form-section"><legend>Identity rules</legend><p>These become the immutable, signature, and flexible layers in every CONTINUUM Pack.</p><div class="create-columns">${textareas('identity',identityFields)}</div></fieldset><fieldset class="form-section"><legend>Character profile</legend><p>Every field shown on the finished Profile tab is available here.</p><div class="create-columns">${textareas('profile',fields)}</div></fieldset><div class="editor-actions"><span id="edit-error" role="alert"></span><button type="submit">Create character slot</button></div></form>`;
   document.querySelector('#close-editor').onclick=()=>editor.close();
-  editor.querySelector('form').onsubmit=async e=>{e.preventDefault();const input=Object.fromEntries(new FormData(e.target));input.age=Number(input.age);try{const c=await api('/api/characters',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(input)});await reload();editor.close();nav('/characters/'+c.id);notify('Character added.');}catch(error){document.querySelector('#edit-error').textContent=error.message;}};
+  const form=editor.querySelector('form'),name=form.elements.name,id=form.elements.id;
+  let idWasEdited=false;
+  id.addEventListener('input',()=>{idWasEdited=true;});
+  name.addEventListener('input',()=>{if(!idWasEdited)id.value=name.value.toLowerCase().normalize('NFKD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,80);});
+  form.onsubmit=async e=>{
+    e.preventDefault();const data=new FormData(form),button=form.querySelector('[type=submit]');button.disabled=true;
+    const collect=prefix=>Object.fromEntries([...data.entries()].filter(([key])=>key.startsWith(prefix+'.')).map(([key,value])=>[key.slice(prefix.length+1),value]));
+    const input={id:data.get('id'),name:data.get('name'),age:Number(data.get('age')),summary:data.get('summary'),tags:String(data.get('tags')||'').split(',').map(value=>value.trim()).filter(Boolean),canonStatus:data.get('canonStatus'),foundryStatus:data.get('foundryStatus'),identity:collect('identity'),profile:collect('profile')};
+    if(data.get('source'))input.source=data.get('source');
+    try{const c=await api('/api/characters',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(input)});await reload();editor.close();nav('/characters/'+c.id);notify(`${c.name} is ready to develop.`);}
+    catch(error){document.querySelector('#edit-error').textContent=error.message;button.disabled=false;}
+  };
   editor.showModal();
 }
+editor.addEventListener('close',()=>editor.classList.remove('wide'));
 reload().then(()=>registerSiteTools({api,reload,navigate:nav})).catch(e=>{app.innerHTML=`<main class="empty"><h1>The library couldn’t open</h1><p>${esc(e.message)}</p><button id="retry">Try again</button></main>`;document.querySelector('#retry').onclick=()=>location.reload();});

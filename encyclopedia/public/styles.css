@@ -854,18 +854,47 @@ summary{
 #editor{
   width:min(680px,94vw);
   padding:28px}
+#editor.wide{
+  width:min(920px,94vw)}
 .edit-field{
   display:block;
   font-size:12px;
   color:#c5b5d2;
   margin:18px 0}
-.edit-field textarea{
+.edit-field input,.edit-field select,.edit-field textarea{
   display:block;
   width:100%;
-  resize:vertical;
   margin-top:8px;
   font-size:12px;
   line-height:1.7}
+.edit-field textarea{
+  resize:vertical}
+.edit-field>small{
+  display:block;
+  color:#7f7387;
+  margin-top:6px;
+  line-height:1.5}
+.character-create-form>p{
+  margin-bottom:24px}
+.form-section{
+  border:1px solid #3d3146;
+  border-radius:9px;
+  padding:4px 20px 10px;
+  margin:0 0 22px}
+.form-section legend{
+  padding:0 9px;
+  color:#d9c8e7;
+  font-family:Georgia,"Times New Roman",serif;
+  font-size:18px}
+.form-section>p{
+  font-size:11px;
+  margin:6px 0 0}
+.create-grid,.create-columns{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  column-gap:18px}
+.create-columns .edit-field{
+  margin:13px 0}
 .editor-actions{
   position:sticky;
   bottom:-28px;
@@ -991,6 +1020,8 @@ footer{
   flex-wrap:wrap}
 }
 @media(max-width:760px){
+  .create-grid,.create-columns{
+    grid-template-columns:1fr}
   .sidebar{
   position:static;
   width:auto;

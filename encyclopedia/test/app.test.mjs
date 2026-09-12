@@ -23,6 +23,16 @@ test('real routes, seed, and unknown route handling',async t=>{
   assert.equal(db.characters[0].foundryStatus,'Not run');assert.equal(db.assets.length,0);
   assert.equal((await f.request('/secret.env')).status,404);
 });
+test('manual character slots accept every dossier field',async t=>{
+  const f=await fixture(t);
+  const input={id:'manual-inez',name:'Manual Inez',age:28,summary:'A complete hand-entered identity.',tags:['Measured','Restorer'],canonStatus:'Canon',foundryStatus:'In progress',source:'Manual curator entry',identity:{immutable:'Exact face.',signature:'Dry humor.',flexible:'Wardrobe.'},profile:{whySheWorks:'Specific personhood.',faceArchitecture:'Angular oval.',bodySilhouette:'Tall and lean.',attractionChannel:'Competence.',movementLanguage:'Deliberate.',identityNucleus:'Repair what others discard.',contradiction:'Guarded but generous.',voice:'Measured and dry.',occupation:'Restorer.',privateWorld:'Dusty studio.',relationshipPromise:'Earned trust.',backstory:'Established manually.'}};
+  const response=await f.request('/api/characters',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(input)});
+  assert.equal(response.status,201,await response.clone().text());const character=await response.json();
+  assert.equal(character.canonStatus,'Canon');assert.equal(character.foundryStatus,'In progress');assert.deepEqual(character.tags,input.tags);
+  assert.deepEqual(character.identity,input.identity);assert.deepEqual(character.profile,input.profile);assert.equal(character.provenance[0].source,input.source);
+  const appSource=await (await f.request('/app.js')).text();
+  assert.match(appSource,/Create character slot/);assert.match(appSource,/Character profile/);assert.match(appSource,/collect\('profile'\)/);assert.match(appSource,/collect\('identity'\)/);
+});
 test('uploads persist, duplicate bytes are rejected, original bytes are preserved',async t=>{
   const f=await fixture(t);
   const upload=()=>f.request('/api/assets?characterId=zara-solano&title=Test',{method:'POST',body:png});
