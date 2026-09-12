@@ -52,7 +52,8 @@ async function applyAtmosphere(c){
   if(configured.mode==='locked'&&configured.palette){setAtmosphere({...base,...configured.palette,motion:configured.motion||base.motion,strength:configured.strength||base.strength,name:'Locked atmosphere'});return;}
   setAtmosphere({...base,motion:configured.motion||base.motion});const accent=await sampledAccent(assetFor(c),configured.variant||0);
   if(run!==atmosphereRun||current()?.id!==c.id||!accent)return;
-  setAtmosphere({...base,accent,secondary:mix(accent,base.secondary,.55),background:mix('#0c0b0f',accent,configured.strength==='immersive'?.19:.1),motion:configured.motion||base.motion,name:`${base.name} · identity sampled`});
+  const directedAccent=mix(accent,base.accent,.58);
+  setAtmosphere({...base,accent:directedAccent,secondary:mix(directedAccent,base.secondary,.55),background:mix('#0c0b0f',directedAccent,configured.strength==='immersive'?.19:.1),motion:configured.motion||base.motion,name:`${base.name} · identity sampled`});
 }
 const assetFor = c => library.assets.find(a => a.id === c.primaryAssetId);
 const assetsFor = c => library.assets.filter(a => a.characterId === c.id);
