@@ -57,6 +57,12 @@ test('OAuth discovery, registration, owner consent and PKCE token exchange work'
   response=await call(3,'fetch_original_image',{characterId:'zara-solano'});result=(await response.json()).result;assert.equal(result.isError,true);assert.match(result.content[0].text,/locked Accepted primary/);
   response=await call(4,'approve_identity_reference',{assetId,confirmIdentityApproval:true});result=(await response.json()).result;assert.equal(result.structuredContent.asset.locked,true);
   response=await call(5,'fetch_original_image',{characterId:'zara-solano'});result=(await response.json()).result;assert.equal(result.content[1].type,'image');assert.deepEqual(Buffer.from(result.content[1].data,'base64'),png);assert.equal(result.structuredContent.canonicalPrimary,true);
+
+  response=await call(6,'upload_image',{characterId:'zara-solano',title:'Mounted-file fallback test',file:'/mnt/data/reference.png'});result=(await response.json()).result;
+  assert.ok(result.structuredContent,JSON.stringify(result));assert.equal(result.structuredContent.uploadRequired,true);assert.match(result.structuredContent.uploadUrl,/\/api\/connector-uploads\/[a-f0-9]{64}$/);
+  response=await f.anonymous(result.structuredContent.uploadUrl.slice(f.origin.length),{method:'POST',headers:{'Content-Type':'application/octet-stream'},body:Buffer.from([137,80,78,71,13,10,26,10,9,8,7,6])});
+  assert.equal(response.status,201,await response.clone().text());const mounted=await response.json();assert.equal(mounted.asset.status,'Review');assert.equal(mounted.asset.title,'Mounted-file fallback test');
+  response=await f.anonymous(result.structuredContent.uploadUrl.slice(f.origin.length),{method:'POST',body:png});assert.equal(response.status,410);
 });
 test('linked renders stay in Review and cross-origin writes are rejected',async t=>{
   const f=await fixture(t);await f.request('/api/library');

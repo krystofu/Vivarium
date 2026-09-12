@@ -2,7 +2,8 @@ import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { WebStandardStreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/webStandardStreamableHttp.js';
 import { z } from 'zod';
 import { createCharacter, updateCharacter, reviewAsset, logRender, profileKeys } from './service.mjs';
-import { decodeBase64, boundedStream, trustedChatFileUrl, uploadAsset, originalAsset, primaryIdentity } from './assets.mjs';
+import { decodeBase64, downloadTrustedChatFile, uploadAsset, originalAsset, primaryIdentity } from './assets.mjs';
+import { createAssetUploadGrant } from './oauth.mjs';
 
 const base64=bytes=>{let value='';const chunk=32768;for(let i=0;i<bytes.length;i+=chunk)value+=String.fromCharCode(...bytes.subarray(i,i+chunk));return btoa(value);};
 const publicAsset=a=>({id:a.id,characterId:a.characterId,title:a.title,mime:a.mime,sha256:a.sha256,byteLength:a.byteLength,kind:a.kind,status:a.status,locked:a.locked,createdAt:a.createdAt});
@@ -17,7 +18,7 @@ export async function handleMcp(request,env,store,auth) {
       const scope=write?'characters:write':'characters:read';
       if(!auth?.scope.split(' ').includes(scope))return {isError:true,content:[{type:'text',text:'Connect the library with the required permissions.'}],_meta:{'mcp/www_authenticate':[`Bearer resource_metadata="${env.SITE_ORIGIN}/.well-known/oauth-protected-resource", scope="${scope}"`]}};
       try {const value=await handler(input);return value?.content?value:{content:[{type:'text',text:JSON.stringify(value)}],structuredContent:value};}
-      catch(error){return {isError:true,content:[{type:'text',text:error.status?error.message:'Unable to update the library. Please retry.'}]};}
+      catch(error){if(!error.status)console.error(`MCP ${name} failed`,error?.message||error);return {isError:true,content:[{type:'text',text:error.status?error.message:'The connector hit an unexpected error. Please retry; the failure has been logged.'}]};}
     });
   }
   tool('search','Search the canonical Vivarium characters','Search only the canonical Vivarium Gen 2 Encyclopedia. Use this for character names, traits, or profile text; do not substitute Airtable, Notion, or another character store.',{query:z.string().max(200)},false,async({query})=>({results:(await store.read()).characters.filter(c=>JSON.stringify([c.name,c.summary,c.tags,c.profile]).toLowerCase().includes(query.toLowerCase())).slice(0,50).map(c=>({id:c.id,title:c.name,url:`${env.SITE_ORIGIN}/characters/${c.id}`}))}));
@@ -29,10 +30,17 @@ export async function handleMcp(request,env,store,auth) {
   tool('create_character','Create character','Use this when the user asks to log a new adult character in the canonical Vivarium Gen 2 Encyclopedia. Creates a persistent record; does not generate missing canon or certify Foundry.',{...shape,id:z.string().regex(/^[a-z][a-z0-9-]{1,79}$/),name:z.string().min(1).max(120)},true,async input=>({character:await createCharacter(store,input,`mcp:${auth.clientId}`)}));
   tool('update_character','Update character','Update an existing canonical Vivarium character. Fetch first, preserve unspecified fields, and cite the source. Does not replace identity images.',{id:z.string().max(100),changes:z.object(shape).strict()},true,async({id,changes})=>({character:await updateCharacter(store,id,changes,`mcp:${auth.clientId}`)}));
   tool('log_render','Log render source','Log an HTTPS render source in Review without downloading it. Use upload_image when ChatGPT has the actual image and the original bytes must live in the Encyclopedia.',{id:z.string().max(100),characterId:z.string().max(100),title:z.string().max(180),sourceUrl:z.string().url().max(2000),notes:z.string().max(4000).optional()},true,async input=>({asset:await logRender(store,input,`mcp:${auth.clientId}`)}));
-  const uploadInput=z.object({characterId:z.string().max(100),title:z.string().min(1).max(180),file:z.object({download_url:z.string().url(),file_id:z.string().optional()}).strict().optional(),imageBase64:z.string().optional()}).strict().refine(v=>!!v.file!==!!v.imageBase64,{message:'Provide exactly one ChatGPT file or base64 image.'});
-  tool('upload_image','Upload an original image','Upload the actual PNG, JPEG, or WebP bytes to a character Gallery. The image always enters Review and cannot become canonical until approve_identity_reference is called with explicit approval.',uploadInput,true,async input=>{
+  const uploadInput=z.object({characterId:z.string().max(100),title:z.string().min(1).max(180),file:z.any().optional(),imageBase64:z.string().optional()}).strict().refine(v=>!!v.file!==!!v.imageBase64,{message:'Provide exactly one ChatGPT file or base64 image.'});
+  tool('upload_image','Upload an original image','Upload the actual PNG, JPEG, or WebP bytes to a character Gallery. Pass an attached or mounted file in file. If the result contains uploadRequired, immediately POST that local file as raw bytes to uploadUrl; this is the ChatGPT mounted-file fallback. The image always enters Review and cannot become canonical until approve_identity_reference is called with explicit approval.',uploadInput,true,async input=>{
     let bytes;
-    if(input.file){const url=trustedChatFileUrl(input.file.download_url);if(!url)throw Object.assign(new Error('The attached file must come from ChatGPT’s protected file service.'),{status:400});const response=await fetch(url,{redirect:'error'});if(!response.ok)throw Object.assign(new Error('ChatGPT could not provide the attached image.'),{status:400});bytes=await boundedStream(response.body,response.headers.get('content-length'));}
+    if(typeof input.file==='string') {
+      if(/^https:\/\//i.test(input.file))bytes=await downloadTrustedChatFile(input.file);
+      else {
+        const token=await createAssetUploadGrant(env,{owner:auth.owner,clientId:auth.clientId,characterId:input.characterId,title:input.title});
+        return {uploadRequired:true,uploadUrl:`${env.SITE_ORIGIN}/api/connector-uploads/${token}`,method:'POST',contentType:'application/octet-stream',expiresInSeconds:300,localFile:input.file,instructions:'POST the exact raw bytes of localFile to uploadUrl now. Do not base64-encode them. A successful response returns the created Review asset.'};
+      }
+    } else if(input.file&&typeof input.file.download_url==='string')bytes=await downloadTrustedChatFile(input.file.download_url);
+    else if(input.file)throw Object.assign(new Error('Pass the attached file path, or a ChatGPT file object with download_url.'),{status:400});
     else bytes=decodeBase64(input.imageBase64);
     return {asset:publicAsset(await uploadAsset(env,store,{characterId:input.characterId,title:input.title,bytes},`mcp:${auth.clientId}`)),nextStep:'Review the image, then call approve_identity_reference only with the user’s explicit approval.'};
   },{'openai/fileParams':['file']});

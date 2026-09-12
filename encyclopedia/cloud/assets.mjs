@@ -9,6 +9,21 @@ export function trustedChatFileUrl(value) {
   return url.protocol==='https:'&&!url.username&&!url.password&&trusted?url:null;
 }
 
+export async function downloadTrustedChatFile(value,maxRedirects=3) {
+  let url=trustedChatFileUrl(value);if(!url)fail(400,'The attached file must come from ChatGPT’s protected file service.');
+  for(let redirects=0;redirects<=maxRedirects;redirects++) {
+    const response=await fetch(url,{redirect:'manual'});
+    if(response.status>=300&&response.status<400) {
+      if(redirects===maxRedirects)fail(400,'ChatGPT redirected the attached image too many times.');
+      const location=response.headers.get('location');url=trustedChatFileUrl(location?new URL(location,url).href:'');
+      if(!url)fail(400,'ChatGPT redirected the attached image outside its protected file service.');
+      continue;
+    }
+    if(!response.ok)fail(400,'ChatGPT could not provide the attached image.');
+    return boundedStream(response.body,response.headers.get('content-length'));
+  }
+}
+
 export function imageType(bytes) {
   if([137,80,78,71,13,10,26,10].every((v,i)=>bytes[i]===v))return ['png','image/png'];
   if(bytes[0]===255&&bytes[1]===216&&bytes[2]===255)return ['jpg','image/jpeg'];

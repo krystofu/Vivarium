@@ -23,6 +23,16 @@ export async function claimOwner(env,user) {
 async function saveGrant(env,kind,payload,expires) {
   const token=randomToken();await env.DB.prepare('INSERT INTO oauth_grants (hash, kind, payload, expires) VALUES (?, ?, ?, ?)').bind(await hash(token),kind,JSON.stringify(payload),expires).run();return token;
 }
+export async function createAssetUploadGrant(env,payload) {return saveGrant(env,'asset-upload',payload,now()+300);}
+export async function consumeAssetUploadGrant(env,token) {
+  if(!/^[a-f0-9]{64}$/.test(token||''))fail(404,'Upload link not found.');
+  const digest=await hash(token);
+  const row=await env.DB.prepare('DELETE FROM oauth_grants WHERE hash = ? AND kind = ? AND expires > ? RETURNING payload').bind(digest,'asset-upload',now()).first();
+  if(!row)fail(410,'This upload link has expired or was already used. Ask the connector for a new one.');
+  const data=JSON.parse(row.payload);
+  if(data.owner!==await getOwner(env))fail(403,'This upload link does not belong to the library owner.');
+  return data;
+}
 async function issue(env,payload) {
   const access=await saveGrant(env,'access',payload,now()+3600);
   const refresh=await saveGrant(env,'refresh',payload,now()+30*86400);
